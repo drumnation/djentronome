@@ -16,7 +16,10 @@
     "./unit": "./src/unit.ts",
     "./integration": "./src/integration.ts",
     "./e2e": "./src/e2e.ts",
-    "./base": "./src/base.ts"
+    "./base": "./src/base.ts",
+    "./playwright": "./src/playwright.browser.ts",
+    "./playwright-backend": "./src/playwright.backend.ts",
+    "./playwright-base": "./src/playwright.base.ts"
   },
   "eslintConfig": {
     "root": true,
@@ -37,7 +40,8 @@
     "vitest": "^1.2.1",
     "@vitest/coverage-v8": "^1.2.1",
     "@testing-library/jest-dom": "^6.2.0",
-    "jsdom": "^23.2.0"
+    "jsdom": "^23.2.0",
+    "@playwright/test": "^1.44.0"
   },
   "devDependencies": {
     "@kit/eslint-config": "workspace:*",
@@ -47,6 +51,7 @@
     "tsx": "^4.7.0"
   },
   "peerDependencies": {
-    "vitest": "^1.2.1"
+    "vitest": "^1.2.1",
+    "@playwright/test": "^1.44.0"
   }
 }
