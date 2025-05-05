@@ -1,0 +1,4 @@
+1. Use vitest for testing
+2. Use pnpm for package manager
+3. We use pnpm workspaces for node monorepo management
+4. Optimize script processes using turborepo

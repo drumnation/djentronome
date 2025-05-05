@@ -1,0 +1,13 @@
+{
+	"name": "djentronome",
+	"version": "0.1.0",
+	"scripts": {
+		"download-track": "ts-node scripts/download-djent-track.ts"
+	},
+	"devDependencies": {
+		"@types/node": "^22.15.3",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.8.3",
+		"youtube-dl-exec": "^3.0.20"
+	}
+}
