@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.1.0",
   "files": [
-    "base.json"
+    "base"
   ],
   "exports": {
-    "./base": "./base.json"
+    "./base": "./base/tsconfig.json"
   },
   "devDependencies": {
     "typescript": "^5.7.2"

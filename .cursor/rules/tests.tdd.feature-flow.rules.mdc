@@ -1,0 +1,83 @@
+---
+description: Use this rule whenever a developer or agent starts a new feature, bug‑fix,   or significant refactor.  It drives the Red‑Green‑Refactor cycle, provides   naming/placement rules, and tells the agent which skill‑jack guides to load. whenToUse:   - New feature or epic kick‑off   - Refactor where tests are missing   - Bug fix that exposes missing coverage
+globs: 
+alwaysApply: false
+---
+# New Feature TDD Rule
+
+<!-- ==================== METADATA ==================== -->
+ruleType: agent_requested
+description: >
+  Use this rule whenever a developer (or agent) starts a brand-new feature,
+  bug-fix, or significant refactor.  It guides them through TDD, picks the
+  correct test type, and tells them the exact file path & name to scaffold.
+whenToUse:
+  - New feature or epic kick-off
+  - Refactor where tests are missing
+  - Bug fix that exposes missing coverage
+# =====================================================
+
+
+## 🚦 Step-by-Step Workflow
+
+1. ### Choose Test Type  
+   Ask: **“Which test best proves this behavior?”**  
+   - **Unit** — pure function / isolated class  
+   - **Integration** — several modules + real deps  
+   - **Backend E2E** — full workflow without a browser (API, worker, CLI)  
+   - **Browser E2E** — user journey in the UI
+
+2. ### Scaffold the File (📁 + 📄)  
+   Use the table below to build the path & filename.  
+   Then create an **empty failing test** (e.g. `test.todo('…')`).
+
+   | Test Type        | Path template (relative to package root) | File name pattern                     | Runner      |
+   |------------------|-------------------------------------------|---------------------------------------|-------------|
+   | Unit             | `<same-dir-as-source>`                    | `<sourceName>.unit.test.ts`           | Vitest      |
+   | Integration      | `testing/integration/`                    | `<module>.integration.test.ts`        | Vitest      |
+   | Backend E2E      | `testing/e2e/`                            | `<scenario>.backend.e2e.test.ts`      | Vitest      |
+   | Browser E2E      | `testing/e2e/`                            | `<scenario>.browser.e2e.ts`           | Playwright  |
+
+   **Algorithm**  
+   1. Derive `featureName` or `moduleName`.  
+   2. Substitute into the chosen row.  
+   3. Example: “login” browser flow → `testing/e2e/login.browser.e2e.ts`.
+
+3. ### Red  
+   Write the failing assertion that expresses desired behaviour.
+
+4. ### Green  
+   Implement minimal code to pass the new test.
+
+5. ### Refactor  
+   Clean up design & code smells.  **Tests stay green.**  
+   - If refactors inflate test complexity, treat it as a smell in production code.
+
+6. ### Repeat until feature complete
+
+---
+
+## 📚 Skill-Jack Reference Matrix  
+*Agents **must READ** every file listed for the current phase before writing code.*
+
+| Scenario / Phase                                | Skill-Jack files to READ |
+|-------------------------------------------------|--------------------------|
+| **Unit tests**                                  | `@.brain/skill-jacks/testing/unit/unit-test-first-principles.skill-jack.ts` • `@.brain/skill-jacks/testing/unit/isolated-dependency-management.skill-jack.ts`  • `@.brain/skill-jacks/testing/unit/vitest-mocking-apis.skill-jack.ts` |
+| **Integration tests**                           | `@.brain/skill-jacks/testing/integration/integration-test-strategy.skill-jack.ts` • `@.brain/skill-jacks/testing/integration/db-test-containers.skill-jack.ts` |
+| **Backend E2E (Vitest)**                        | `@.brain/skill-jacks/testing/e2e-backend/backend-e2e-vitest-patterns.skill-jack.ts` • `@.brain/skill-jacks/testing/e2e-backend/cli-helper-execa.skill-jack.ts` |
+| **Browser E2E (Playwright)**                    | `@.brain/skill-jacks/testing/e2e-browser/playwright-pom-patterns.skill-jack.ts`  •  `@.brain/skill-jacks/testing/e2e-browser/playwright-shared-fixtures.skill-jack.ts` |
+| **Preventing flakiness (any E2E)**              | `@.brain/skill-jacks/testing/e2e-browser/flaky-test-prevention.skill-jack.ts` |
+| **Managing reusable test data**                 | `@.brain/skill-jacks/testing/e2e-browser/test-data-management.skill-jack.ts` |
+| **Cross-browser Playwright strategy**           | `@.brain/skill-jacks/testing/e2e-browser/cross-browser-strategy.skill-jack.ts` |
+| **CI orchestration for Playwright in Turbo**    | `@.brain/skill-jacks/testing/e2e-browser/playwright-ci-orchestration.skill-jack.ts` |
+
+
+---
+
+## ✅ Definition of Done
+
+- The chosen test type is documented in the test header.  
+- At least one meaningful failing test became green.  
+- All existing tests (unit / integration / e2e) pass.  
+- No unused mocks; external behaviour validated.  
+- Code & tests pushed with a descriptive commit message.

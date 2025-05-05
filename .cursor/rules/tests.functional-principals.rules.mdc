@@ -1,0 +1,28 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Functional Test Principles
+
+<!-- ==================== METADATA ==================== -->
+ruleType: always
+description: >
+  Universal testing philosophy: one-to-one validation, minimal mocks,
+  real behavior over internals.
+# =====================================================
+
+1. **Test real use, not implementation details.**
+2. **Mock only externals (HTTP, time, env).**
+3. **One-to-One Principle:** pass ⇒ feature works; fail ⇒ something broke.
+4. **Prefer integration / functional tests; unit tests for pure utilities.**
+5. **Small, high-signal suite → run on every change.**
+6. **Failure ≠ delete. Investigate first.**
+
+### Detect Active Framework
+If unsure, look for:
+- `vitest.config.ts`, `.mocharc.js`, `jest.config.js`, `playwright.config.ts`
+- or check `package.json` devDependencies.
+
+Ask: “What test framework should I use here?” if still ambiguous.
+

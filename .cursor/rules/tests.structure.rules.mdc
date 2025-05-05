@@ -1,0 +1,44 @@
+---
+description: 
+globs: **/*.unit.test.ts,**/*.integration.test.ts,**/*.e2e.test.ts,**/*.backend.e2e.test.ts,**/*.browser.e2e.@(ts|tsx),**/*.{unit,integration,e2e,backend.e2e,browser.e2e}.@(test.ts,test.tsx,ts,tsx)
+alwaysApply: false
+---
+# Test File Structure & Naming Rule
+
+<!-- ==================== METADATA ==================== -->
+ruleType: auto_attached
+filePatternMatches:
+  - "**/*.unit.test.ts"
+  - "**/*.integration.test.ts"
+  - "**/*.e2e.test.ts"
+description: >
+  Enforce placement & naming of unit / integration / E2E tests across
+  all `packages/*` libraries.
+# =====================================================
+
+## 📁 Placement
+
+| Test Type   | Location                                   | Example                             |
+|-------------|--------------------------------------------|-------------------------------------|
+| Unit        | Co-located next to source                  | `src/foo.unit.test.ts`              |
+| Integration | `packages/<pkg>/testing/integration/`      | `.../api.integration.test.ts`       |
+| E2E         | `packages/<pkg>/testing/e2e/`              | `.../login-flow.e2e.test.ts`        |
+
+## 🔤 Naming Suffix
+`<name>.<unit|integration|e2e>.test.ts`
+
+## 🔤 Naming Suffix
+
+| Test Kind        | Recommended suffix/glob                         | Runner           |
+|------------------|-------------------------------------------------|------------------|
+| Unit             | `*.unit.test.ts`                                | Vitest           |
+| Integration      | `*.integration.test.ts`                         | Vitest           |
+| **Backend E2E**  | `*.backend.e2e.test.ts` *(or just `*.e2e.test.ts`)* | Vitest           |
+| **Browser E2E**  | `*.browser.e2e.ts`                              | Playwright       |
+
+### CI globs
+```bash
+vitest run "**/*.unit.test.ts"
+vitest run "**/testing/integration/**/*.test.ts"
+vitest run "**/*.{backend,e2e}.e2e.test.ts"   # backend Vitest E2E
+playwright test --config @kit/testing/playwright "**/*.browser.e2e.ts"

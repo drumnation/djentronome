@@ -14,6 +14,7 @@
 		"change-agent": "tsx scripts/agents/switch-agent.ts"
 	},
 	"devDependencies": {
+		"@playwright/test": "^1.52.0",
 		"@types/node": "^22.15.3",
 		"eslint": "^9.26.0",
 		"prettier": "^3.5.3",

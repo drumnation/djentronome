@@ -1,0 +1,33 @@
+{
+  "name": "@djentronome/sound",
+  "version": "0.1.0",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types/index.ts"
+  },
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier --check \"**/*.{ts,tsx}\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "turbo run test --filter=@djentronome/sound",
+    "test:unit": "vitest run --config @kit/testing/unit",
+    "test:integration": "vitest run --config @kit/testing/integration",
+    "test:e2e": "vitest run --config @kit/testing/e2e",
+    "test:e2e:browser": "echo 'n/a' && exit 0"
+  },
+  "devDependencies": {
+    "@kit/tsconfig": "workspace:*",
+    "@kit/eslint-config": "workspace:*",
+    "@kit/prettier-config": "workspace:*",
+    "@kit/testing": "workspace:*"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@kit/eslint-config/base",
+      "@kit/eslint-config/sort"
+    ]
+  },
+  "prettier": "@kit/prettier-config"
+} 

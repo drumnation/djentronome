@@ -1,7 +1,7 @@
 {
   "name": "@kit/testing",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "src/index.ts",
   "author": "David Mieloch <david@mieloch.com>",
   "description": "Shared Vitest configurations for Brain Garden monorepo",
@@ -9,17 +9,19 @@
     "clean": "git clean -xdf .turbo node_modules",
     "format": "prettier --check \"**/*.{ts,tsx}\"",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build": "tsc"
   },
   "exports": {
     ".": "./src/index.ts",
-    "./unit": "./src/unit.ts",
-    "./integration": "./src/integration.ts",
-    "./e2e": "./src/e2e.ts",
+    "./unit": "./src/unit/index.ts",
+    "./integration": "./src/integration/index.ts",
+    "./e2e": "./src/e2e/index.ts",
     "./base": "./src/base.ts",
-    "./playwright": "./src/playwright.browser.ts",
-    "./playwright-backend": "./src/playwright.backend.ts",
-    "./playwright-base": "./src/playwright.base.ts"
+    "./playwright": "./src/playwright/index.ts",
+    "./playwright-backend": "./src/playwright-backend/index.ts",
+    "./playwright-base": "./src/playwright.base.ts",
+    "./types": "./src/types/index.ts"
   },
   "eslintConfig": {
     "root": true,
@@ -37,21 +39,21 @@
     }
   },
   "dependencies": {
-    "vitest": "^1.2.1",
+    "vitest": "^1.0.0",
     "@vitest/coverage-v8": "^1.2.1",
     "@testing-library/jest-dom": "^6.2.0",
     "jsdom": "^23.2.0",
-    "@playwright/test": "^1.44.0"
+    "@playwright/test": "^1.40.0"
   },
   "devDependencies": {
+    "@kit/tsconfig": "workspace:*",
     "@kit/eslint-config": "workspace:*",
     "@kit/prettier-config": "workspace:*",
-    "@kit/tsconfig": "workspace:*",
     "@types/node": "^20.11.5",
-    "tsx": "^4.7.0"
+    "typescript": "^5.0.0"
   },
   "peerDependencies": {
-    "vitest": "^1.2.1",
-    "@playwright/test": "^1.44.0"
+    "vitest": "^1.0.0",
+    "@playwright/test": "^1.40.0"
   }
 }

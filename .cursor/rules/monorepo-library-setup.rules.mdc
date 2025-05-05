@@ -3,118 +3,146 @@ description:
 globs: 
 alwaysApply: true
 ---
-# When creating a new library or converting to our pnpm workspaces setup:
+# Monorepo Setup Rule (v2) — pnpm + Turbo + @kit/testing
 
-## Monorepo Folder Purposes
+## 📂 Folder Purposes
 
 ```txt
-/apps - executable libraries that consume packages
-/packages - libraries that export their functionality to be consumed by apps
-/tooling - libraries consumed by apps and packages to setup shared monorepo tooling
+/apps      Executable apps that consume packages
+/packages  Libraries exported to apps
+/tooling   Shared tooling (eslint, prettier, testing, tsconfig, etc.)
 ```
 
-## Monorepo naming patterns
+🏷 Naming Patterns
 
-/apps - @[app-name]/*
-/packages - @[app-name]/*
-/tooling - @kit/*
-
-## IF the library is an app in the ./apps folder
-
-1. In the package.json:
-```json
-   {
-    "name": "@[app-name]/[package-name]",
-    "scripts": {
-      "clean": "git clean -xdf .turbo node_modules",
-      "format": "prettier --check \"**/*.{ts,tsx}\"",
-      "lint": "eslint .",
-      "typecheck": "tsc --noEmit",
-    },
-    "devDependencies": {
-      "@kit/tsconfig": "workspace:*",
-      "@kit/eslint-config": "workspace:*",
-      "@kit/prettier-config": "workspace:*"
-    },
-    "eslintConfig": {
-      "root": true,
-      "extends": [
-        "@kit/eslint-config/base", // default settings
-        "@kit/eslint-config/react", // only if a react library
-        "@kit/eslint-config/sort" // enables import and object key sorting
-      ]
-   },
-   "prettier": "@kit/prettier-config"
-}
+```txt
+/apps      @[app-name]/*
+/packages  @[app-name]/*
+/tooling   @kit/*   ← reserved for shared tooling
 ```
 
-2. The tsconfig default should be:
+🛠 Creating (or converting) a Library
 
-```json
+1. If the library lives in ./apps/*
+
+package.json
+
+```json5
 {
-  "extends": "@kit/tsconfig/base",
-  "compilerOptions": {
-    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
-    "baseUrl": ".",
-    "paths": {}
+  "name": "@[app-name]/[package-name]",
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier --check \"**/*.{ts,tsx}\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+
+    /* ---------- TEST SCRIPTS ---------- */
+    "test":              "turbo run test --filter={packageName}",
+    "test:unit":         "vitest run --config @kit/testing/unit",
+    "test:integration":  "vitest run --config @kit/testing/integration",
+    "test:e2e":          "vitest run --config @kit/testing/e2e",
+    "test:e2e:browser":  "playwright test --config @kit/testing/playwright"
   },
-  "include": [
-    "*.ts",
-    "*.tsx",
-    "*.css",
-    "src",
-    "src/**/*.d.ts",
-    "*.d.ts"
-  ],
-  "exclude": [
-    "node_modules",
-  ]
+  "devDependencies": {
+    "@kit/tsconfig":        "workspace:*",
+    "@kit/eslint-config":   "workspace:*",
+    "@kit/prettier-config": "workspace:*",
+    "@kit/testing":         "workspace:*"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@kit/eslint-config/base",
+      "@kit/eslint-config/react",   // remove if not React
+      "@kit/eslint-config/sort"
+    ]
+  },
+  "prettier": "@kit/prettier-config"
 }
 ```
 
-## IF the library is in the ./packages/* folder in addition to everything above
+Replace any unused test:* script with a no-op (echo 'n/a' && exit 0) if that scope doesn't apply.
 
-1. The package.json needs exports
+2. If the library lives in ./packages/*
 
-```json
+Add exports (rest is identical):
+
+```json5
+{
   "name": "@[app-name]/[package-name]",
   "exports": {
     ".": "./src/index.ts",
     "./types": "./src/types/index.ts"
+  }
+}
+```
+
+🪄 Shared tsconfig.json
+
+```json5
+{
+  "extends": "@kit/tsconfig/base",
+  "compilerOptions": {
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
+    "baseUrl": "."
   },
+  "include": ["*.ts", "*.tsx", "*.css", "src", "src/**/*.d.ts", "*.d.ts"],
+  "exclude": ["node_modules"]
+}
 ```
 
-## Cleanup
-
-1. We don't need any eslint, typescript, or prettier related packages or types in the package.json besides our local tooling packages
-
-## Notes
-
-1. The workspace tooling looks like this:
-
-```txt
-📁 tooling
-    ├── 📁 eslint
-│   ├── 📁 prettier
-│   ├── 📁 testing
-│   └── 📁 tsconfig
-```
-
-2. tooling
+🏗 Root turbo.json
 
 ```json
-  "name": "@kit/[package-name]",
-  "exports": {
-    ".": "./src/index.ts",
-    "./types": "./src/types/index.ts"
-  },
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": { "outputs": ["dist/**"] },
+
+    "test":             { "dependsOn": ["^build"], "outputs": [] },
+    "test:unit":        { "outputs": [] },
+    "test:integration": { "outputs": [] },
+    "test:e2e":         { "outputs": [] },
+    "test:e2e:browser": { "outputs": [] }
+  }
+}
 ```
 
-2. pnpm workspaces settings for reference
+🧪 @kit/testing Exports
+
+| Export                              | Runner     | Purpose                        |
+| ----------------------------------- | ---------- | ------------------------------ |
+| `@kit/testing/unit`                 | Vitest     | Unit tests                     |
+| `@kit/testing/integration`          | Vitest     | Multi-module integration tests |
+| `@kit/testing/e2e`                  | Vitest     | Backend / API E2E tests        |
+| `@kit/testing/playwright`           | Playwright | Browser E2E flows              |
+| `@kit/testing/playwright-backend`\* | Playwright | Optional non-UI E2E            |
+
+
+* Only needed if you prefer Playwright for backend flows; Vitest e2e remains default.
+
+📘 pnpm-workspace.yaml
 
 ```yaml
 packages:
-  - 'apps/*'
-  - 'packages/*'
-  - 'tools/*'
-```  
+  - "apps/*"
+  - "packages/*"
+  - "tooling/*"
+```
+
+✅ Quick Start
+
+- pnpm install
+
+- Add/convert libraries following the folder rules above.
+
+- Run pnpm turbo run test at the repo root, or individual test:* scripts inside a package.
+
+---
+
+These four files give you:
+
+* **Clear TDD guidance** (agent-requested).  
+* **Autonomous file-structure enforcement**.  
+* **Universal functional-testing principles**.  
+* **Turn-key monorepo setup** with Vitest + Playwright wired in.

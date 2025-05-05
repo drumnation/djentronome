@@ -71,32 +71,158 @@ export const createEmptyInputMap = (): InputMap => {
   }, {} as InputMap);
 };
 
-// Class to be implemented in the future for handling inputs from different sources
+/**
+ * Input handler for keyboard, MIDI and other input methods
+ */
+
+/**
+ * The different types of input devices supported
+ */
+export enum InputDeviceType {
+  Keyboard = 'keyboard',
+  MIDI = 'midi',
+  Gamepad = 'gamepad'
+}
+
+/**
+ * Represents an input event
+ */
+export interface InputEvent {
+  /**
+   * The type of input device that triggered the event
+   */
+  deviceType: InputDeviceType;
+  /**
+   * The key/note/button that was pressed
+   */
+  code: string | number;
+  /**
+   * Whether the key/note/button is currently pressed
+   */
+  pressed: boolean;
+  /**
+   * The velocity/pressure of the press (0-1)
+   */
+  velocity?: number;
+  /**
+   * When the event occurred
+   */
+  timestamp: number;
+}
+
+/**
+ * Callback for input events
+ */
+export type InputCallback = (event: InputEvent) => void;
+
+/**
+ * Input handler class for managing inputs from various devices
+ */
 export class InputHandler {
-  private inputMap: InputMap;
-  private bindings: InputBindings;
+  private keyboardCallbacks: Set<InputCallback> = new Set();
+  private midiCallbacks: Set<InputCallback> = new Set();
+  private gamepadCallbacks: Set<InputCallback> = new Set();
+  private midiEnabled: boolean = false;
+  private keyboardEnabled: boolean = false;
+  private gamepadEnabled: boolean = false;
 
-  constructor(customBindings?: Partial<InputBindings>) {
-    this.inputMap = createEmptyInputMap();
-    this.bindings = {
-      ...defaultBindings,
-      ...customBindings,
+  /**
+   * Create a new input handler
+   */
+  constructor() {
+    // We'll initialize specific handlers when enabled
+  }
+
+  /**
+   * Enable keyboard input
+   */
+  enableKeyboard(): void {
+    if (this.keyboardEnabled) return;
+    
+    this.keyboardEnabled = true;
+    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keyup', this.handleKeyUp);
+  }
+
+  /**
+   * Disable keyboard input
+   */
+  disableKeyboard(): void {
+    if (!this.keyboardEnabled) return;
+    
+    this.keyboardEnabled = false;
+    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keyup', this.handleKeyUp);
+  }
+
+  /**
+   * Handle keyboard down events
+   */
+  private handleKeyDown = (event: KeyboardEvent): void => {
+    const inputEvent: InputEvent = {
+      deviceType: InputDeviceType.Keyboard,
+      code: event.code,
+      pressed: true,
+      timestamp: performance.now()
     };
-  }
+    
+    this.keyboardCallbacks.forEach(callback => callback(inputEvent));
+  };
 
-  // Methods to be implemented
-  public update() {
-    // Capture and normalize inputs from different sources
-  }
+  /**
+   * Handle keyboard up events
+   */
+  private handleKeyUp = (event: KeyboardEvent): void => {
+    const inputEvent: InputEvent = {
+      deviceType: InputDeviceType.Keyboard,
+      code: event.code,
+      pressed: false,
+      timestamp: performance.now()
+    };
+    
+    this.keyboardCallbacks.forEach(callback => callback(inputEvent));
+  };
 
-  public getInputMap(): InputMap {
-    return this.inputMap;
-  }
-
-  public rebindInput(source: keyof InputBindings, key: string, action: InputAction) {
-    if (this.bindings[source]) {
-      this.bindings[source][key] = action;
+  /**
+   * Register a callback for any input event
+   */
+  registerCallback(callback: InputCallback, deviceType?: InputDeviceType): void {
+    if (!deviceType || deviceType === InputDeviceType.Keyboard) {
+      this.keyboardCallbacks.add(callback);
     }
+    
+    if (!deviceType || deviceType === InputDeviceType.MIDI) {
+      this.midiCallbacks.add(callback);
+    }
+    
+    if (!deviceType || deviceType === InputDeviceType.Gamepad) {
+      this.gamepadCallbacks.add(callback);
+    }
+  }
+
+  /**
+   * Unregister a callback
+   */
+  unregisterCallback(callback: InputCallback, deviceType?: InputDeviceType): void {
+    if (!deviceType || deviceType === InputDeviceType.Keyboard) {
+      this.keyboardCallbacks.delete(callback);
+    }
+    
+    if (!deviceType || deviceType === InputDeviceType.MIDI) {
+      this.midiCallbacks.delete(callback);
+    }
+    
+    if (!deviceType || deviceType === InputDeviceType.Gamepad) {
+      this.gamepadCallbacks.delete(callback);
+    }
+  }
+
+  /**
+   * Clean up all event listeners
+   */
+  cleanup(): void {
+    this.disableKeyboard();
+    // Additional cleanup for MIDI and Gamepad would go here
   }
 }
 

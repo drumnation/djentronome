@@ -1,9 +1,18 @@
 {
   "extends": "@kit/tsconfig/base",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {},
-    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
+    "baseUrl": "."
   },
-  "include": ["src"]
+  "include": [
+    "*.ts",
+    "*.tsx",
+    "*.css",
+    "src",
+    "src/**/*.d.ts",
+    "*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 } 
