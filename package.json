@@ -2,11 +2,20 @@
 	"name": "djentronome",
 	"version": "0.1.0",
 	"scripts": {
-		"download-track": "ts-node scripts/download-djent-track.ts"
+		"download-track": "ts-node scripts/download-djent-track.ts",
+		"build": "turbo run build",
+		"dev": "turbo run dev",
+		"lint": "turbo run lint",
+		"test": "turbo run test",
+		"clean": "turbo run clean && rm -rf node_modules",
+		"format": "prettier --write \"**/*.{ts,tsx,md}\""
 	},
 	"devDependencies": {
 		"@types/node": "^22.15.3",
+		"eslint": "^9.26.0",
+		"prettier": "^3.5.3",
 		"ts-node": "^10.9.2",
+		"turbo": "^2.5.2",
 		"typescript": "^5.8.3",
 		"youtube-dl-exec": "^3.0.20"
 	}

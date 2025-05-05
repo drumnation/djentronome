@@ -1,0 +1,22 @@
+{
+  "name": "@kit/core-logic",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@kit/tsconfig": "workspace:*",
+    "@kit/eslint-config": "workspace:*",
+    "@kit/prettier-config": "workspace:*"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@kit/eslint-config/base",
+      "@kit/eslint-config/sort"
+    ]
+  },
+  "prettier": "@kit/prettier-config"
+} 
