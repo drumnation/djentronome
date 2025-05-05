@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Agent Behavior:
+- Prioritize functional tests: does the feature work as expected in-game?
+- Avoid mocks unless isolating I/O or randomness
+- Automate reproducible tests for gameplay regressions

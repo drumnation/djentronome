@@ -1,0 +1,9 @@
+---
+description:  When creating menus, HUD, or other player-facing interfaces
+globs: 
+alwaysApply: false
+---
+Agent Behavior:
+- Use visual hierarchy (contrast, size, placement)
+- Prioritize accessibility: readable fonts, input feedback, clear state
+- Avoid nested or hard-to-navigate UI flows

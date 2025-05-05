@@ -1,0 +1,86 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Rule: Monorepo Changelog and Versioning
+
+## Purpose
+Establish a consistent, scalable changelog and semantic versioning strategy for monorepos using `pnpm`, `turborepo`, and `workspace:*` dependencies. This rule replaces `changelog.rules.mdc` in monorepo projects.
+
+## Detection
+**Activate this rule if any of the following are true:**
+- A `pnpm-workspace.yaml` file exists
+- The project has multiple `package.json` files in subdirectories (e.g., `packages/*`, `libs/*`, `apps/*`)
+- The user confirms this is a monorepo project
+
+## Structure & Strategy
+
+### 1. Per-Package CHANGELOG.md
+Each package must maintain its own changelog in Keep a Changelog format:
+- Location: `<package>/CHANGELOG.md`
+- Semantic versioning per package
+- Each entry begins in the `[Unreleased]` section
+
+### 2. Per-Package Versioning
+Each package must have its own `package.json` with an accurate version field:
+- Follow [SemVer 2.0.0](mdc:https:/semver.org)
+- Version is updated in tandem with each release entry
+
+### 3. Root-Level Changelog
+Use `root/CHANGELOG.md` for:
+- Tooling or dev environment updates
+- Changes to root scripts or shared config
+- Project-wide releases (optional)
+
+## Agent Behavior
+
+### When a task is completed:
+1. **Detect affected packages:**
+   - Analyze file paths of modified files
+   - Map files to packages using workspace root
+
+2. **For each changed package:**
+   - Append or update `[Unreleased]` in that package’s `CHANGELOG.md`
+   - Bump the version in `package.json`
+     - Use `patch`, `minor`, or `major` based on impact
+     - Use `npm version` or `pnpm version --no-git-tag-version` if required
+   - Optionally scaffold or update `/docs/packages/[name]/release-notes.md`
+
+3. **If root was modified:**
+   - Repeat the same steps in `root/CHANGELOG.md`
+   - Bump version in `root/package.json`
+
+4. **Commit message:**
+   - One atomic commit per changed package
+   - Message must include version bump and summary, e.g.:
+     ```
+     chore(ui): bump to 1.4.2 – fixed dropdown alignment bug
+     ```
+
+### Version Consistency Validation
+Before any commit is finalized, validate:
+- `CHANGELOG.md` version matches `package.json` version
+- `[Unreleased]` section exists (or is cleared during release)
+
+## Best Practices
+
+### Do
+- ✅ Treat each package like its own NPM module
+- ✅ Automate changelog and version bump after each atomic feature or fix
+- ✅ Maintain clean commit history per package
+- ✅ Include links to diff comparison in changelog (optional)
+
+### Don’t
+- ❌ Update root `CHANGELOG.md` unless it’s a root-level change
+- ❌ Skip changelog entries — even small changes should be documented
+- ❌ Let package versions drift out of sync with their changelogs
+
+## See Also
+- `monorepo-readme.rules.mdc`
+- `create-monorepo-changelog-entry.prompt.md`
+- `validate-package-versions.workflow.md`
+
+## If You Are Migrating
+If your project currently uses `changelog.rules.mdc`, **replace it** with this rule for monorepos.
+Do not run both rules concurrently.

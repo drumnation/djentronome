@@ -1,0 +1,11 @@
+---
+description: 
+globs: **/game-engine/ecs/**
+alwaysApply: false
+---
+Agent Behavior:
+- Prefer composition over inheritance using Components
+- Keep Systems pure and stateless (ideally)
+- Keep systems modular and focused
+- Register entities with appropriate components
+- Avoid storing game logic in entities or components directly

@@ -1,0 +1,9 @@
+---
+description: When experiencing lag, frame drops, or long load times
+globs: 
+alwaysApply: false
+---
+Agent Behavior:
+- Profile before optimizing
+- Reduce draw calls via batching, culling, or instancing
+- Avoid unnecessary updates in idle systems

@@ -1,0 +1,9 @@
+---
+description: When building or refactoring the game’s main loop
+globs: 
+alwaysApply: false
+---
+Agent Behavior:
+- Define a clear gameplay loop (e.g., spawn → act → resolve → reset)
+- Make loop steps explicit and modular
+- Ensure consistent time-step updates for logic and physics

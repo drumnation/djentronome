@@ -1,0 +1,9 @@
+---
+description: During testing or internal development phases
+globs: 
+alwaysApply: false
+---
+
+Agent Behavior:
+- Add keybinds or toggles for god mode, teleport, spawn items
+- Ensure all debug tools are removed or gated in production builds

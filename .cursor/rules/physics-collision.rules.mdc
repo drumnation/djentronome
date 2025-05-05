@@ -1,0 +1,12 @@
+---
+description: 
+globs: **/game-engine/collision/**
+alwaysApply: false
+---
+Agent Behavior:
+- Use bounding boxes or simple shapes (circle, rect) for collision checks
+- Detect overlap between entities with `position` and `size` components
+- Emit collision events or tags (e.g., `isHit`, `shouldDestroy`)
+- Optionally resolve collisions (e.g., prevent movement, reduce health)
+- Layer collision types (e.g., player, terrain, triggers)
+- Separate collision detection from resolution

@@ -1,0 +1,10 @@
+---
+description: 
+globs: **/game-engine/animation/**
+alwaysApply: false
+---
+Agent Behavior:
+- Use deltaTime to control frame progression
+- Store animation state (e.g., current frame, elapsed time) in components
+- Switch animations based on state transitions (e.g., `idle → run`)
+- Support looping and one-shot animations (e.g., jump, death)

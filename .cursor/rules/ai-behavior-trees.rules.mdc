@@ -1,0 +1,10 @@
+---
+description: 
+globs: **/game-engine/ai/**
+alwaysApply: false
+---
+Agent Behavior:
+- Define AI state (e.g., idle, patrol, chase, attack) in components or tags
+- Use simple logic or finite-state machines to control transitions
+- Read from the world (e.g., distance to player, line of sight) to make decisions
+- Emit commands or modify components based on decisions (e.g., move toward target)

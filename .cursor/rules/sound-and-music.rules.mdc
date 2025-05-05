@@ -1,0 +1,9 @@
+---
+description: When adding or managing audio in the game
+globs: 
+alwaysApply: false
+---
+Agent Behavior:
+- Separate sound effects and music channels
+- Use audio cues to reinforce gameplay feedback
+- Ensure fallbacks or silence modes for unsupported environments

@@ -1,0 +1,235 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Node.js/Express API Best Practices & Structure (PNPM Monorepo Focus)
+
+Core Philosophy: Prioritize Modularity, Separation of Concerns (SoC), DRY (Don't Repeat Yourself), Testability, and Maintainability. Structure your codebase to be easily understood, extended, and refactored. Leverage TypeScript for type safety across the monorepo.
+
+1. PNPM Monorepo Structure:
+
+Organize your project into distinct packages within the monorepo. This promotes code reuse and clear boundaries.
+
+/my-project
+|-- packages/
+|   |-- api/             # Your Express.js backend
+|   |-- web/             # React/Vue/etc. frontend
+|   |-- mobile/          # React Native frontend
+|   |-- shared-types/    # TypeScript types/interfaces shared across packages
+|   |-- tooling/         # Shared configs (ESLint, Prettier, TSConfig)
+|-- pnpm-workspace.yaml  # Defines the workspace packages
+|-- package.json         # Root package.json (often for root dev scripts)
+|-- tsconfig.base.json   # Base TypeScript configuration (optional but recommended)
+|-- .gitignore
+|-- README.md
+pnpm-workspace.yaml: Defines which directories contain workspace packages (e.g., packages/*).
+tooling/:
+eslint-config-custom/: Shared ESLint configuration package.
+prettier-config-custom/: Shared Prettier configuration package.
+tsconfig-custom/: Shared base tsconfig.json files (e.g., base.json, node.json, react.json).
+shared-types/: Contains only TypeScript interface and type definitions. No runtime code. This package will be a dependency for api, web, and mobile.
+2. API Package (packages/api) Structure:
+
+Structure your Express application for clarity and SoC.
+
+/packages/api
+|-- src/
+|   |-- app.ts                 # Express app instantiation, global middleware, route registration
+|   |-- server.ts              # HTTP server setup, WebSocket setup, start listening
+|   |-- config/                # Environment variables, DB connection, external services config
+|   |   |-- index.config.ts
+|   |   |-- database.config.ts
+|   |-- constants/             # Application-wide constants (error codes, enums, magic strings)
+|   |   |-- error-codes.constants.ts
+|   |-- controllers/           # Handles HTTP requests, calls services, formats responses
+|   |   |-- user.controller.ts
+|   |   |-- product.controller.ts
+|   |-- database/              # Migrations, seeds, potentially DB connection logic if not in config
+|   |   |-- migrations/
+|   |   |-- seeds/
+|   |-- dtos/                  # Data Transfer Objects - Define request/response shapes, often used for validation
+|   |   |-- user.dto.ts
+|   |   |-- product.dto.ts
+|   |-- errors/                # Custom error classes
+|   |   |-- ApiError.error.ts
+|   |   |-- NotFoundError.error.ts
+|   |-- interfaces/            # API-specific interfaces (if not covered by shared-types)
+|   |-- middleware/            # Reusable request handlers (auth, logging, validation, error handling)
+|   |   |-- auth.middleware.ts
+|   |   |-- error.middleware.ts
+|   |   |-- validate.middleware.ts
+|   |-- models/ (or entities/) # Database schema definitions (e.g., Mongoose Schemas, TypeORM Entities)
+|   |   |-- user.model.ts
+|   |   |-- product.model.ts
+|   |-- routes/                # Define API endpoints, map to controllers, apply route-specific middleware
+|   |   |-- index.routes.ts    # Main router aggregating feature routes
+|   |   |-- user.routes.ts
+|   |   |-- product.routes.ts
+|   |   |-- docs.routes.ts     # Swagger documentation route
+|   |-- services/              # Business logic layer, interacts with models/external APIs
+|   |   |-- user.service.ts
+|   |   |-- product.service.ts
+|   |   |-- auth.service.ts
+|   |-- sockets/               # WebSocket event handlers and logic
+|   |   |-- index.socket.ts    # Setup and connection logic
+|   |   |-- chat.handler.ts
+|   |-- swagger/               # Swagger configuration and definitions
+|   |   |-- swagger.config.ts
+|   |   |-- definitions/       # Reusable schema definitions (can auto-generate from DTOs/models)
+|   |-- utils/                 # Generic utility functions (string manipulation, date formatting)
+|   |   |-- helpers.util.ts
+|   |   |-- logger.util.ts
+|   |-- validators/            # Input validation logic/schemas (e.g., using Zod, Joi, class-validator)
+|   |   |-- user.validator.ts
+|   |   |-- product.validator.ts
+|-- tests/                   # Unit, integration, e2e tests (mirror src structure)
+|-- Dockerfile
+|-- package.json             # API specific dependencies and scripts
+|-- tsconfig.json            # Extends base tsconfig from tooling
+|-- .env.example
+|-- .eslintrc.js             # Extends base eslint config from tooling
+|-- .prettierrc.js           # Extends base prettier config from tooling
+3. File Naming Convention:
+
+Use Filename.ConcernType.ts for clarity and easy identification.
+
+Controllers: feature.controller.ts (e.g., user.controller.ts)
+Services: feature.service.ts (e.g., auth.service.ts)
+Models/Entities: feature.model.ts or feature.entity.ts (e.g., order.model.ts)
+Routes: feature.routes.ts (e.g., product.routes.ts)
+Middleware: purpose.middleware.ts (e.g., auth.middleware.ts)
+DTOs: feature.dto.ts (e.g., createUser.dto.ts, userResponse.dto.ts)
+Validators: feature.validator.ts (e.g., user.validator.ts)
+Configuration: area.config.ts (e.g., database.config.ts)
+Utilities: purpose.util.ts (e.g., jwt.util.ts)
+Constants: category.constants.ts (e.g., http-status.constants.ts)
+Custom Errors: ErrorName.error.ts (e.g., ValidationError.error.ts)
+Sockets: feature.handler.ts or feature.socket.ts (e.g., notification.handler.ts)
+4. Initial Composition Rules (Build it Right First):
+
+Define Types First: Start with shared-types for core data structures used across frontends and backend. Define API-specific DTOs (dtos/) for request/response shaping and validation.
+Model Layer: Define database models/entities (models/) reflecting your data structure. Keep them focused on data representation and database interaction (CRUD).
+Service Layer: Implement business logic here (services/). Services orchestrate data flow, interact with models, call other services, and handle external API calls. Keep services framework-agnostic (no req, res objects). Use dependency injection (e.g., constructor injection) for repositories or other services.
+Validation Layer: Implement validation schemas/logic (validators/) using libraries like Zod or Joi. Create reusable validation middleware (middleware/validate.middleware.ts) that uses these schemas, often based on DTOs.
+Controller Layer: Keep controllers thin (controllers/). Their primary role is:
+Parse request data (req.body, req.params, req.query).
+(Optional but recommended) Use DTOs to type/shape incoming data.
+Delegate validation to middleware or validation layer.
+Call the appropriate service method(s) with validated data.
+Handle service responses (data or errors).
+Format the HTTP response (status codes, JSON body) using res.
+Do not put business logic here.
+Routing Layer: Define routes (routes/) mapping HTTP methods and paths to controller actions. Apply necessary middleware (auth, validation). Aggregate feature routes in index.routes.ts.
+Middleware: Implement reusable cross-cutting concerns (middleware/) like authentication, logging, error handling, rate limiting. Keep them focused and single-purpose.
+Configuration: Centralize all configuration (config/) loaded from environment variables (dotenv).
+Error Handling: Implement custom error classes (errors/) and a centralized error handling middleware (error.middleware.ts). Services should throw specific errors; the middleware catches them and formats the HTTP error response.
+Short Files: Aim for files under 200-300 lines. If a file grows too large, it's likely violating SoC and needs splitting.
+5. Refactoring Rules & Warning Signs:
+
+Fat Controller: Controller contains business logic, complex data manipulation, or direct database calls.
+Refactor: Move logic to a Service. Ensure controller only handles HTTP layer concerns.
+Fat Service: Service handles too many unrelated responsibilities or becomes excessively long.
+Refactor: Break down the service into smaller, more focused services based on domain features (e.g., UserService, AuthService, PaymentService).
+Model Contains Business Logic: Database models/entities contain logic beyond simple data validation or hooks.
+Refactor: Move business logic to the Service layer. Models should primarily represent data structure and persistence.
+Code Duplication: The same or very similar logic appears in multiple places (controllers, services).
+Refactor: Abstract the common logic into a utility function (utils/), a shared service method, a base class, or middleware.
+Lack of Validation Layer: Validation logic is scattered within controllers or services.
+Refactor: Centralize validation using DTOs and a validation library (Zod, Joi). Apply validation via middleware early in the request lifecycle.
+Hardcoded Values: Magic strings/numbers scattered in the code.
+Refactor: Move to a dedicated constants/ directory or configuration files.
+Deeply Nested Logic / Callback Hell: Difficult-to-read nested callbacks or promise chains.
+Refactor: Use async/await consistently. Break down complex functions into smaller, well-named helper functions or service methods.
+Ignoring Shared Types: Defining the same types/interfaces in api, web, and mobile.
+Refactor: Define shared structures in packages/shared-types and import them where needed. Keep versions consistent.
+Tightly Coupled Components: Components have direct knowledge of the internal implementation details of others.
+Refactor: Use dependency injection. Depend on abstractions (interfaces) rather than concrete implementations where appropriate. Services should not know about req/res.
+6. Middleware:
+
+Global Middleware (app.ts): Apply middleware like cors, body parsers (express.json(), express.urlencoded()), request logging, security headers (helmet), rate limiting. Apply the global error handler last.
+Route-Level Middleware (routes/feature.routes.ts): Apply middleware specific to a set of routes, like authentication (auth.middleware.ts) or authorization checks.
+Specific Endpoint Middleware: Apply middleware directly in the route definition for highly specific needs, often validation (validate.middleware.ts).
+Order Matters: Middleware executes sequentially. Place auth before authorization, validation before controllers, global error handler last.
+7. KEEP IT DRY:
+
+Services: Centralize business logic.
+Middleware: Handle cross-cutting concerns.
+Utils: Create reusable helper functions.
+Constants: Avoid magic strings/numbers.
+Shared Packages: Use shared-types and tooling.
+Base Classes/Functions: Abstract common patterns if applicable (use with caution to avoid overly complex abstractions).
+8. Swagger Documentation:
+
+Integrate: Use swagger-jsdoc and swagger-ui-express.
+Setup: Create a configuration file (swagger/swagger.config.ts). Define base info (title, version, servers).
+Annotate: Use JSDoc comments above your route definitions and controller methods to describe endpoints, parameters, request bodies, and responses.
+Reference DTOs or define schemas (swagger/definitions/) for request/response bodies. Use @openapi or @swagger tags.
+Route: Create a dedicated route (routes/docs.routes.ts) to serve the Swagger UI (/api-docs).
+Keep Updated: Crucially, document every new endpoint or change immediately. Outdated documentation is misleading.
+Example JSDoc for Swagger:
+
+TypeScript
+
+// src/controllers/user.controller.ts
+import { Request, Response } from 'express';
+import * as userService from '../services/user.service';
+import { CreateUserDto } from '../dtos/user.dto'; // Assuming DTO defined
+
+export class UserController {
+  /**
+   * @openapi
+   * /users:
+   * post:
+   * summary: Create a new user
+   * tags: [Users]
+   * requestBody:
+   * required: true
+   * content:
+   * application/json:
+   * schema:
+   * $ref: '#/components/schemas/CreateUserDto' // Reference your DTO/Schema
+   * responses:
+   * 201:
+   * description: User created successfully
+   * content:
+   * application/json:
+   * schema:
+   * $ref: '#/components/schemas/UserResponseDto' // Reference response DTO
+   * 400:
+   * description: Invalid input data
+   * 500:
+   * description: Server error
+   */
+  async createUser(req: Request<{}, {}, CreateUserDto>, res: Response) {
+    // Validation likely handled by middleware using CreateUserDto
+    const validatedBody = req.body;
+    try {
+      const newUser = await userService.createUser(validatedBody);
+      // Format response using a UserResponseDto potentially
+      res.status(201).json(newUser);
+    } catch (error) {
+      // Error handling middleware will catch this
+      throw error;
+    }
+  }
+  // ... other controller methods
+}
+
+// Make sure CreateUserDto and UserResponseDto are defined either in shared-types
+// or dtos/ and properly referenced in your main swagger definition file.
+9. WebSocket Considerations:
+
+Setup: Initialize WebSocket server (e.g., socket.io) in server.ts, attaching it to the HTTP server.
+Handlers: Create handlers in sockets/ (e.g., chat.handler.ts, notification.handler.ts).
+Connection Logic: Handle connection, disconnection, and authentication in a central socket setup file (sockets/index.socket.ts).
+Modularity: Structure handlers by feature.
+Reuse Services: Socket handlers should leverage the existing Service layer for business logic, just like controllers. Avoid duplicating logic.
+Authentication: Secure your WebSocket connections, often using the same mechanism (e.g., JWT) as your REST API. Pass the token during connection handshake.
+10. Shared Tooling:
+
+Use packages/tooling for base tsconfig.json, eslint.config.js (or .eslintrc.js), and prettier.config.js.
+Each package (api, web, mobile) should extend these base configurations in their respective config files (tsconfig.json, .eslintrc.js, .prettierrc.js).
+Install linters/formatters as root dev dependencies or within the tooling package.
+Enforce linting and formatting via Git hooks (husky, lint-staged).
+

@@ -1,0 +1,124 @@
+---
+description: Use when creating or updating global state logic.
+globs: 
+alwaysApply: false
+---
+/**
+ * Rule: Zustand usage in real-time apps (e.g., games, audio, MIDI, UI sync)
+ *
+ * Applies To: React apps requiring low-latency global state, especially
+ * when integrated with @react-three/fiber or MIDI/Web Audio systems.
+ *
+ * Primary use: Time-driven systems (e.g. scroll offset, audio sync),
+ * MIDI input (drum triggers), and reactive UI/visual logic.
+ */
+
+export const zustandRule = {
+  //
+  // 🧱 FILE & ORGANIZATION PATTERNS
+  //
+  folders: [
+    "📁 state/                     → colocate all zustand stores here",
+    " ├─ useGameStore.ts          → bpm, time, score, play state",
+    " ├─ useMidiStore.ts          → raw hits, current hit, velocity buffer",
+    " └─ useUIStore.ts            → dev mode, overlays, latency offset, toggles",
+  ],
+
+  //
+  // ✅ STORE STRUCTURE PATTERN
+  //
+  storeTemplate: `
+  const useStore = create(() => ({
+    time: 0,
+    bpm: 120,
+    isPlaying: false,
+    score: 0,
+    setTime: (time: number) => set({ time }),
+    togglePlay: () => set((s) => ({ isPlaying: !s.isPlaying })),
+  }))
+  `,
+
+  //
+  // 🎯 BEST PRACTICES
+  //
+  practices: [
+    "Use Zustand for cross-component state with shared lifecycles (time, hits, playback).",
+    "Use `.getState()` or `.subscribe()` outside React (e.g. useFrame, MIDI listeners).",
+    "Use selector functions to avoid full-store subscriptions in components.",
+    "Group actions with data in a flat structure per store.",
+    "Use devtools middleware for debugging (only in dev).",
+    "Store only serializable primitives or arrays — avoid non-serializable refs or DOM elements.",
+  ],
+
+  //
+  // ⚠️ WARNING SIGNS
+  //
+  antiPatterns: [
+    "❌ useState for time or hit state in R3F or MIDI-heavy contexts.",
+    "❌ useContext to pass mutable data — Zustand should be the shared system.",
+    "❌ One giant store with all game/audio/UI logic in one blob.",
+    "❌ Setting state too frequently inside `useFrame` without batching.",
+    "❌ Updating entire objects instead of partial patches (e.g. overwriting deep arrays).",
+    "❌ Storing DOM refs or Three.js objects inside Zustand.",
+  ],
+
+  //
+  // 🧠 ADVANCED PATTERNS
+  //
+  advanced: [
+    {
+      label: "🧵 use `subscribe()` to bind store state to outside systems",
+      example: `
+const unsub = useGameStore.subscribe((s) => s.isPlaying, (val) => {
+  val ? startAudioEngine() : stopAudioEngine()
+})
+      `,
+    },
+    {
+      label: "🕹️ External triggers (MIDI, audio) → call .getState() directly",
+      example: `
+const { addHit } = useMidiStore.getState()
+addHit({ type: "kick", time: performance.now() / 1000 })
+      `,
+    },
+    {
+      label: "🪞 use shallow equality for selector usage",
+      example: `
+const { time, bpm } = useGameStore((s) => ({ time: s.time, bpm: s.bpm }), shallow)
+      `,
+    },
+    {
+      label: "🎛️ Use Leva to bind directly to Zustand",
+      example: `
+const { offset } = useControls(() => ({
+  offset: {
+    value: useUIStore.getState().latencyOffset,
+    onChange: (v) => useUIStore.setState({ latencyOffset: v })
+  }
+}))
+      `,
+    },
+    {
+      label: "📡 Use `subscribeWithSelector` for scoped reactivity",
+      note: "This avoids stale subscriptions and is better for performance.",
+    },
+  ],
+
+  //
+  // 🧩 STORE COMPOSITION STRATEGY
+  //
+  composition: [
+    "1 store per concern: time/audio/game, midi/hits, UI/debug",
+    "If a concern is shareable across apps (e.g. audio transport), create a base store in `packages/shared/state`",
+    "Use `.getState()` for immediate access, `.subscribe()` for external reactivity, and selector hooks for UI reactivity",
+  ],
+
+  //
+  // 📈 RECOMMENDED DEPENDENCIES
+  //
+  deps: [
+    "zustand",
+    "zustand/middleware (for devtools)",
+    "zustand/shallow (for selector comparison)",
+  ],
+}

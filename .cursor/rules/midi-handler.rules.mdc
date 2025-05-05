@@ -1,0 +1,68 @@
+---
+description: 
+globs: packages/audio-engine/**,input-handler/**
+alwaysApply: false
+---
+Here’s a compact, high-signal `midi-handler.rule.ts` for **capturing and mapping drum hits** from a MIDI drum kit (e.g. Alesis Nitro) using the **Web MIDI API**, tailored for use in a rhythm game context.
+
+---
+
+### 📜 `midi-handler.rule.ts`
+
+```ts
+/**
+ * Rule: Capture and handle MIDI drum input
+ * Purpose: Map incoming hits (kick/snare) to in-game actions
+ */
+
+export const midiHandler = {
+  /**
+   * Start MIDI input listener and pass hits to a callback
+   * @param onHit Callback with note number and velocity
+   */
+  async init(onHit: (note: number, velocity: number) => void) {
+    const access = await navigator.requestMIDIAccess()
+    for (const input of access.inputs.values()) {
+      input.onmidimessage = (msg) => {
+        const [cmd, note, velocity] = msg.data
+        if (cmd === 144 && velocity > 0) onHit(note, velocity)
+      }
+    }
+  },
+
+  /**
+   * Default MIDI note mappings (General MIDI standard)
+   */
+  map: {
+    KICK: 36,
+    SNARE: 38,
+    HIHAT_CLOSED: 42,
+    HIHAT_OPEN: 46,
+    TOM_1: 48,
+    TOM_2: 45,
+    TOM_3: 43,
+    CRASH: 49,
+    RIDE: 51,
+  },
+
+  /**
+   * Utility: Is a note a valid hit
+   */
+  isRecognizedNote(note: number): boolean {
+    return Object.values(midiHandler.map).includes(note)
+  },
+}
+```
+
+---
+
+### ✅ Usage Example
+
+```ts
+import { midiHandler } from "@/rules/midi-handler.rule"
+
+midiHandler.init((note, velocity) => {
+  if (note === midiHandler.map.KICK) triggerHit("kick")
+  if (note === midiHandler.map.SNARE) triggerHit("snare")
+})
+```

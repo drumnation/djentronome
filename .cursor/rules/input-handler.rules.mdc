@@ -1,0 +1,9 @@
+---
+description: 
+globs: **/input/**,**/controls/**
+alwaysApply: false
+---
+Agent Behavior:
+- Decouple input capture from gameplay logic
+- Normalize input (e.g., keyboard, gamepad, touch) into unified events
+- Allow remapping and abstract bindings (e.g., “Jump” not “KeyW”)

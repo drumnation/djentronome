@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Agent Behavior:
+- Define clear separation of concerns: rendering, input, logic, systems
+- Avoid monolithic classes; prefer modular structure (e.g., ECS)
+- Centralize core update loop logic in one well-documented location

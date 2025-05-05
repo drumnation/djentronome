@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Agent Behavior:
+- Maintain a consistent naming and folder convention for assets
+- Preprocess sprites into atlases if possible
+- Use lazy loading or preload strategies based on gameplay flow

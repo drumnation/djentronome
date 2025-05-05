@@ -1,0 +1,95 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# `monorepo-readme.rules.mdc`
+_Last Updated: 2025-04-05_
+
+## Purpose
+
+This rule governs the maintenance of the **root `README.md`** in a monorepo using tools like **pnpm workspaces** and **Turborepo**. It ensures the README accurately reflects:
+
+- The structure and purpose of each workspace package (`apps/`, `packages/`, etc.)
+- Core commands, tooling, and workspace setup
+- Developer instructions for running, building, and testing across packages
+
+## Rule Scope
+
+This rule replaces `root-readme.rules.mdc` in all monorepos.
+
+> ✅ Apply this rule **only** when monorepo structure is detected (multiple workspaces, `pnpm-workspace.yaml`, `turbo.json`).
+
+---
+
+## Trigger: When to Update the Root README
+
+You MUST trigger a README review and potential update after any task involving:
+
+1. **New Package or App Added**  
+   → e.g., new workspace under `apps/` or `packages/`
+
+2. **Turborepo or Workspace Changes**  
+   → e.g., changes to `turbo.json`, shared scripts, or affected pipelines
+
+3. **Updated Dev Commands**  
+   → e.g., new or changed `build`, `dev`, `lint`, `test`, `format`, or `deploy` commands across packages
+
+4. **Monorepo Dependency or Install Flow Updates**  
+   → e.g., added global tooling, new `.env` files, installation scripts, etc.
+
+5. **Core Architecture or Cross-Package Refactor**  
+   → e.g., major restructuring of package responsibilities, moved shared utilities, introduced new orchestrators
+
+6. **Package Deprecation or Removal**  
+   → e.g., removed unused internal packages, sunset a legacy app
+
+---
+
+## Agent Behavior: README Update Workflow
+
+If a major change triggers this rule:
+
+1. ✅ **Log Impact:** Internally note that `README.md` may need updates  
+2. 📥 **Read Existing README:** Load and parse root `README.md`  
+3. 🧠 **Analyze Affected Sections:** Determine what needs to change based on the type of update. Key sections:
+   - Monorepo Overview / Architecture
+   - Package Directory Table (apps/packages)
+   - Getting Started (installation, setup)
+   - Common Dev Commands (via `turbo`, `pnpm`, etc.)
+   - Shared Config (e.g., Prettier, ESLint, Vitest)
+   - CI/CD Setup (optional)
+4. ✍️ **Draft Update:** Generate concise, helpful edits to reflect the change
+5. 💾 **Apply Changes:** Update `README.md` directly  
+6. 📘 **Log Completion:** Confirm update and include it in the next commit
+
+---
+
+## Style & Content Guidelines
+
+- Keep the **first screen** of the README clean and inviting
+- Include a clear **table of workspaces** or `apps/` and `packages/` with short descriptions
+- Include setup instructions:
+  ```bash
+  pnpm install
+  pnpm dev
+  ```
+
+- Mention usage of:
+  - `turbo run <task>` for parallel workflows
+  - Shared tooling or configs: `eslint`, `prettier`, `vitest`, `storybook`, etc.
+
+---
+
+## Example Section Template
+
+```markdown
+## 🧱 Monorepo Structure
+
+| Path               | Description                |
+|--------------------|----------------------------|
+| `apps/web`         | Frontend web application   |
+| `apps/api`         | Backend API service        |
+| `packages/ui`      | Shared UI components       |
+| `packages/config`  | Shared tooling and configs |
+```

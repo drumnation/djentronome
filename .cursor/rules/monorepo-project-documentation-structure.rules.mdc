@@ -1,0 +1,117 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Rule: Monorepo Project Documentation Structure
+
+## Purpose
+
+Ensure that domain knowledge, implementation rationale, architecture decisions, and workspace-specific guidance are captured across **multiple apps and packages in a monorepo**. This rule provides guidance on organizing and maintaining internal documentation so that all relevant information is discoverable, non-redundant, and scoped to the right domain.
+
+---
+
+## Trigger: When to Run This Rule
+
+Run this rule **after completing any feature or refactor** that introduces:
+- Non-obvious behavior, configuration, or patterns
+- Design decisions that aren’t captured in code
+- Architectural shifts that affect multiple packages
+- Shared logic changes across apps (e.g., `@ui`, `@api`)
+- New workspace packages or internal tooling
+
+---
+
+## Workspace-Aware Documentation Capture
+
+### 1. 🧠 Capture Domain Knowledge
+For each non-obvious implementation or architectural choice, summarize:
+- Design rationale
+- Assumptions and tradeoffs
+- Known edge cases or gotchas
+- Internal conventions or patterns used
+- Environment setup/config required (e.g. `.env`, secrets)
+
+---
+
+### 2. 📂 Choose the Correct Documentation Location
+
+| Scenario | Location |
+|----------|----------|
+| Feature spans multiple packages | `/docs/features/[feature-name]/` |
+| Implementation logic lives in shared workspace (`packages/ui`, `packages/api`) | Add `.md` files inside `packages/[pkg]/docs/` |
+| Package-level setup instructions or design notes | `packages/[pkg]/README.md` or `docs/` subfolder |
+| App-specific implementation details | `apps/[app]/docs/` (if present) or `/docs/apps/[app]/` |
+| Architectural decisions | `/docs/architecture/adr/` |
+
+---
+
+### 3. 🧷 Create or Update Markdown File
+
+#### File Naming
+Use kebab-case filenames that reflect the topic clearly:
+- `auth-token-refresh-flow.md`
+- `data-fetching-patterns.md`
+
+#### YAML Frontmatter (Required)
+
+```yaml
+---
+title: "API Caching Pattern"
+description: "Explains the custom caching strategy used in `@api` for SSR and client hydration."
+keywords:
+  - api
+  - caching
+  - SWR
+  - react-query
+  - ssr
+  - hydration
+related_features: ["dashboard-data-pipeline"]
+related_concepts: ["react-query-vs-swr"]
+related_adr: ["001-cache-layer-decision"]
+last_updated: "2025-04-05"
+---
+```
+
+#### Immediately Below Frontmatter
+Write a concise 2–4 sentence summary of the document’s purpose. This supports search and RAG indexing.
+
+---
+
+### 4. 📘 Document Content Best Practices
+
+- Use **clear H2/H3 headers** with relevant keywords.
+- Prefer short, atomic sections.
+- Include **code blocks** and **setup steps** where appropriate.
+- Add **cross-links** to:
+  - Related features (`@docs/features/...`)
+  - Shared packages or components
+  - ADRs (`@docs/architecture/adr/...`)
+- Annotate anything that needs future cleanup or is known brittle.
+
+---
+
+### 5. 📑 Index File Maintenance
+
+Update the relevant `.index.md` files when you create or update documents:
+
+- `docs/features/features.index.md`
+- `docs/concepts/concepts.index.md`
+- `docs/architecture/adr.index.md`
+- `docs/packages/[pkg]/[pkg].index.md` (if applicable)
+
+For each new document, add:
+```markdown
+- [[API Caching Pattern]](./api-caching-pattern.md): Explains the custom caching strategy used in `@api` for SSR and client hydration.
+```
+
+Also update the `last_updated` in each modified file.
+
+---
+
+### 6. 🔍 Check for Existing Docs
+
+Before writing something new:
+- Check the index files for related documents
+- Run `grep` or RAG search for duplicate/similar content
+- If found, consider updating or expanding the existing doc

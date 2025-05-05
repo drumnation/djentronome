@@ -1,0 +1,852 @@
+---
+description: This rule provides comprehensive guidance on mobile-first design implementation using Mantine UI components. Reference this rule when agents need to create responsive interfaces, implement UI components, or ensure proper component wrapping practices across the application. Especially useful when designing new features, refactoring existing UI, or troubleshooting responsive layout issues.
+globs: 
+alwaysApply: false
+---
+# Mantine UI Component Cheatsheet
+
+## Purpose
+This cheatsheet provides a quick reference of available Mantine UI components for agents to use when implementing responsive, mobile-first interfaces. Remember that all Mantine components **MUST** be wrapped in our own custom components.
+
+## Core Layout Components
+
+### Box
+**Purpose**: Universal container for layout, positioning, and styling
+**Key Props**: 
+- `p`, `px`, `py`, `pt`, `pr`, `pb`, `pl` - padding (responsive)
+- `m`, `mx`, `my`, `mt`, `mr`, `mb`, `ml` - margin (responsive)
+- `w` - width (responsive)
+- `h` - height (responsive)
+- `display` - CSS display (responsive)
+- `pos` - position property
+
+**Mobile-First Usage**:
+```tsx
+<Box 
+  w={{ base: '100%', md: '50%' }} 
+  p={{ base: 'xs', md: 'md' }}
+>
+  {children}
+</Box>
+```
+
+### Flex
+**Purpose**: Flexbox container with responsive direction
+**Key Props**:
+- `direction` - flex-direction (responsive)
+- `wrap` - flex-wrap (responsive)
+- `justify` - justify-content (responsive)
+- `align` - align-items (responsive)
+- `gap` - gap between items (responsive)
+
+**Mobile-First Usage**:
+```tsx
+<Flex 
+  direction={{ base: 'column', md: 'row' }}
+  gap={{ base: 'xs', md: 'md' }}
+>
+  {children}
+</Flex>
+```
+
+### Stack
+**Purpose**: Vertical stack of elements with consistent spacing
+**Key Props**:
+- `gap` - space between items (responsive)
+- `align` - horizontal alignment (responsive)
+- `justify` - vertical alignment (responsive)
+
+**Mobile-First Usage**:
+```tsx
+<Stack gap={{ base: 'xs', md: 'md' }}>
+  {children}
+</Stack>
+```
+
+### Group
+**Purpose**: Horizontal group of elements with consistent spacing
+**Key Props**:
+- `position` - horizontal alignment ('apart', 'center', 'right', 'left')
+- `spacing` - space between items (responsive)
+- `grow` - allows items to grow
+- `wrap` - enables wrapping (responsive)
+
+**Mobile-First Usage**:
+```tsx
+<Group 
+  spacing={{ base: 'xs', md: 'md' }}
+  position="apart"
+>
+  {children}
+</Group>
+```
+
+### Grid
+**Purpose**: Responsive 12-column grid system
+**Key Props**:
+- `gutter` - spacing between columns (responsive)
+- `columns` - number of columns (default: 12)
+
+**Grid.Col Props**:
+- `span` - column width (1-12, responsive)
+- `offset` - column offset (responsive)
+- `order` - column order (responsive)
+
+**Mobile-First Usage**:
+```tsx
+<Grid gutter={{ base: 'xs', md: 'md' }}>
+  <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+    Column 1
+  </Grid.Col>
+  <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+    Column 2
+  </Grid.Col>
+  <Grid.Col span={{ base: 12, sm: 12, md: 4 }}>
+    Column 3
+  </Grid.Col>
+</Grid>
+```
+
+### SimpleGrid
+**Purpose**: Equal-width columns with auto-flow
+**Key Props**:
+- `cols` - number of columns (responsive)
+- `spacing` - gap between columns (responsive)
+- `verticalSpacing` - gap between rows (responsive)
+
+**Mobile-First Usage**:
+```tsx
+<SimpleGrid 
+  cols={{ base: 1, sm: 2, md: 3, lg: 4 }}
+  spacing={{ base: 'xs', md: 'md' }}
+>
+  {items.map(item => <Card key={item.id} {...item} />)}
+</SimpleGrid>
+```
+
+### Container
+**Purpose**: Centered content container with max-width
+**Key Props**:
+- `size` - container width ('xs', 'sm', 'md', 'lg', 'xl', or custom)
+- `fluid` - removes max-width
+
+**Mobile-First Usage**:
+```tsx
+<Container size={{ base: 'xs', sm: 'sm', md: 'md', lg: 'lg' }}>
+  {children}
+</Container>
+```
+
+## Typography
+
+### Text
+**Purpose**: Text paragraph or span
+**Key Props**:
+- `fz` - font size (responsive)
+- `fw` - font weight (responsive)
+- `lh` - line height (responsive)
+- `c` - text color
+- `truncate` - enables truncation with ellipsis
+
+**Mobile-First Usage**:
+```tsx
+<Text 
+  fz={{ base: 'sm', md: 'md' }}
+  lh={{ base: 1.4, md: 1.6 }}
+>
+  Content here
+</Text>
+```
+
+### Title
+**Purpose**: Section headings
+**Key Props**:
+- `order` - heading level (1-6)
+- `fz` - font size (responsive)
+- `fw` - font weight (responsive)
+- `c` - text color
+
+**Mobile-First Usage**:
+```tsx
+<Title 
+  order={2}
+  fz={{ base: 'h3', md: 'h2' }}
+>
+  Heading Text
+</Title>
+```
+
+### Mark
+**Purpose**: Highlighted text
+**Key Props**:
+- `color` - highlight color
+
+### List
+**Purpose**: Ordered or unordered lists
+**Key Props**:
+- `type` - 'ordered' or 'unordered'
+- `spacing` - space between items
+- `withPadding` - adds default padding
+- `size` - list size
+
+## Navigation
+
+### Burger
+**Purpose**: Hamburger menu button for mobile navigation
+**Key Props**:
+- `opened` - controls open/closed state
+- `size` - button size
+- `color` - icon color
+
+**Mobile-First Usage**:
+```tsx
+<Box hiddenFrom="md">
+  <Burger opened={opened} onClick={() => setOpened(!opened)} />
+</Box>
+```
+
+### Drawer
+**Purpose**: Slide-out panel, typically for mobile navigation
+**Key Props**:
+- `opened` - controls visibility
+- `onClose` - close callback
+- `position` - drawer position ('left', 'right', 'top', 'bottom')
+- `size` - drawer width/height
+- `title` - drawer title
+
+**Mobile-First Usage**:
+```tsx
+<Drawer
+  opened={opened}
+  onClose={() => setOpened(false)}
+  size="xs"
+  position="left"
+>
+  <Stack>
+    {/* Navigation items */}
+  </Stack>
+</Drawer>
+```
+
+### Navbar
+**Purpose**: Vertical navigation bar
+**Key Props**:
+- `width` - navbar width (responsive)
+- `height` - navbar height (responsive)
+- `fixed` - position fixed
+- `hiddenBreakpoint` - responsive breakpoint to hide navbar
+
+### Tabs
+**Purpose**: Tab interface
+**Key Props**:
+- `defaultValue` - initial active tab
+- `orientation` - 'horizontal' or 'vertical'
+- `variant` - visual style ('default', 'outline', 'pills')
+- `placement` - tab placement ('left', 'right', 'center', 'apart')
+
+**Mobile-First Usage**:
+```tsx
+<Tabs 
+  defaultValue="tab1"
+  orientation={{ base: 'horizontal', md: 'vertical' }}
+>
+  <Tabs.List>
+    <Tabs.Tab value="tab1">Tab 1</Tabs.Tab>
+    <Tabs.Tab value="tab2">Tab 2</Tabs.Tab>
+  </Tabs.List>
+
+  <Tabs.Panel value="tab1">Tab 1 content</Tabs.Panel>
+  <Tabs.Panel value="tab2">Tab 2 content</Tabs.Panel>
+</Tabs>
+```
+
+### NavLink
+**Purpose**: Navigation link item
+**Key Props**:
+- `active` - active state
+- `label` - main label
+- `description` - additional text
+- `icon` - left icon
+- `rightSection` - right section content
+- `children` - for nested navigation
+
+## Inputs & Forms
+
+### TextInput
+**Purpose**: Basic text input field
+**Key Props**:
+- `label` - input label
+- `placeholder` - placeholder text
+- `description` - help text
+- `error` - error message
+- `disabled` - disables input
+- `required` - marks as required
+- `radius` - border radius
+
+**Mobile-First Usage**:
+```tsx
+<TextInput
+  label="Email"
+  placeholder="your@email.com"
+  w="100%"
+  radius="md"
+  size={{ base: 'sm', md: 'md' }}
+/>
+```
+
+### PasswordInput
+**Purpose**: Password input with visibility toggle
+**Key Props**: 
+- Same as TextInput plus:
+- `visibilityToggleIcon` - custom toggle icon
+
+### Textarea
+**Purpose**: Multi-line text input
+**Key Props**:
+- Same as TextInput plus:
+- `autosize` - auto-adjusts height
+- `minRows` - minimum rows
+- `maxRows` - maximum rows
+
+### NumberInput
+**Purpose**: Input for numbers with increment/decrement
+**Key Props**:
+- Same as TextInput plus:
+- `min` - minimum value
+- `max` - maximum value
+- `step` - increment/decrement step
+- `precision` - decimal precision
+
+### Checkbox & CheckboxGroup
+**Purpose**: Single or grouped checkboxes
+**Key Props**:
+- `checked` - checked state
+- `label` - checkbox label
+- `indeterminate` - indeterminate state
+
+### Radio & RadioGroup
+**Purpose**: Radio button select
+**Key Props**:
+- `value` - radio value
+- `checked` - checked state
+- `label` - radio label
+- `name` - group name
+
+### Switch
+**Purpose**: Toggle switch
+**Key Props**:
+- `checked` - on/off state
+- `label` - switch label
+- `size` - switch size
+- `color` - switch color
+
+### Slider
+**Purpose**: Range input slider
+**Key Props**:
+- `value` - current value
+- `min` - minimum value
+- `max` - maximum value
+- `step` - step value
+- `marks` - slider marks/ticks
+- `label` - value label format
+
+### Select
+**Purpose**: Dropdown select
+**Key Props**:
+- `data` - options array
+- `searchable` - enables search
+- `clearable` - allows clearing
+- `maxDropdownHeight` - dropdown height
+- `placeholder` - placeholder text
+
+**Mobile-First Usage**:
+```tsx
+<Select
+  label="Country"
+  placeholder="Select your country"
+  data={countries}
+  searchable
+  size={{ base: 'sm', md: 'md' }}
+  dropdownPosition="bottom"
+  w="100%"
+/>
+```
+
+### MultiSelect
+**Purpose**: Multiple selection dropdown
+**Key Props**:
+- Same as Select plus:
+- `value` - array of selected values
+- `maxSelectedValues` - selection limit
+
+### FileInput
+**Purpose**: File upload input
+**Key Props**:
+- `accept` - file types to accept
+- `multiple` - allow multiple files
+- `capture` - camera capture mode
+- `clearable` - allow clearing selection
+
+### DatePicker
+**Purpose**: Date selection
+**Key Props**:
+- `value` - selected date
+- `minDate` - earliest selectable date
+- `maxDate` - latest selectable date
+- `firstDayOfWeek` - start of week (0-6)
+- `clearable` - allow clearing selection
+
+### DateRangePicker
+**Purpose**: Date range selection
+**Key Props**:
+- Similar to DatePicker, but for date ranges
+- `value` - [startDate, endDate]
+
+## Feedback & Overlays
+
+### Modal
+**Purpose**: Modal dialog overlay
+**Key Props**:
+- `opened` - visibility state
+- `onClose` - close callback
+- `title` - modal title
+- `size` - modal size
+- `centered` - centers vertically
+- `fullScreen` - takes full screen
+
+**Mobile-First Usage**:
+```tsx
+<Modal
+  opened={opened}
+  onClose={() => setOpened(false)}
+  title="Subscribe"
+  size={{ base: '100%', sm: 'md', lg: 'lg' }}
+  fullScreen={{ base: true, sm: false }}
+>
+  Modal content
+</Modal>
+```
+
+### Popover
+**Purpose**: Popup content attached to element
+**Key Props**:
+- `opened` - visibility state
+- `position` - popover position
+- `withArrow` - shows arrow pointer
+- `width` - popover width
+- `shadow` - shadow style
+
+### Tooltip
+**Purpose**: Informational hover tooltip
+**Key Props**:
+- `label` - tooltip text
+- `position` - tooltip position
+- `color` - background color
+- `multiline` - allows line breaks
+
+### Notification
+**Purpose**: Notification message
+**Key Props**:
+- `title` - notification title
+- `message` - notification body
+- `color` - color theme
+- `loading` - shows loading state
+- `icon` - custom icon
+- `autoClose` - auto-close timeout
+
+### Alert
+**Purpose**: Important information box
+**Key Props**:
+- `title` - alert title
+- `color` - color theme
+- `icon` - custom icon
+- `variant` - visual style
+- `withCloseButton` - adds close button
+
+**Mobile-First Usage**:
+```tsx
+<Alert
+  title="Payment Failed"
+  color="red"
+  icon={<IconAlertCircle />}
+  radius={{ base: 'xs', md: 'md' }}
+  p={{ base: 'xs', md: 'md' }}
+>
+  Your payment couldn't be processed.
+</Alert>
+```
+
+### Loader
+**Purpose**: Loading indicator
+**Key Props**:
+- `color` - loader color
+- `size` - loader size
+- `variant` - loader style ('oval', 'bars', 'dots')
+
+### Progress
+**Purpose**: Progress indicator
+**Key Props**:
+- `value` - progress percentage
+- `color` - progress color
+- `size` - bar height
+- `radius` - border radius
+- `striped` - adds stripe pattern
+- `animate` - animates stripes
+
+## Data Display
+
+### Card
+**Purpose**: Content container with styling
+**Key Props**:
+- `shadow` - shadow style
+- `padding` - inner padding
+- `radius` - border radius
+- `withBorder` - adds border
+
+**Card.Section Props**:
+- `withBorder` - adds border
+- `inheritPadding` - inherits card padding
+
+**Mobile-First Usage**:
+```tsx
+<Card
+  shadow="sm"
+  padding={{ base: 'xs', md: 'md' }}
+  radius={{ base: 'xs', md: 'md' }}
+>
+  <Card.Section withBorder>
+    <Image src="image.jpg" height={160} alt="Card image" />
+  </Card.Section>
+  
+  <Text mt="md" fz={{ base: 'sm', md: 'md' }}>
+    Card content
+  </Text>
+</Card>
+```
+
+### Image
+**Purpose**: Responsive image with optional placeholder
+**Key Props**:
+- `src` - image source
+- `alt` - image alt text
+- `height` - image height (responsive)
+- `width` - image width (responsive)
+- `radius` - border radius
+- `fit` - object-fit property
+- `withPlaceholder` - shows placeholder while loading
+
+**Mobile-First Usage**:
+```tsx
+<Image
+  src="image.jpg"
+  alt="Description"
+  height={{ base: 200, md: 300 }}
+  width={{ base: '100%', md: '50%' }}
+  fit="cover"
+  withPlaceholder
+/>
+```
+
+### Avatar
+**Purpose**: User or entity avatar
+**Key Props**:
+- `src` - image source
+- `alt` - image alt text
+- `size` - avatar size
+- `radius` - border radius
+- `color` - background color for initials
+
+### Badge
+**Purpose**: Small status indicator
+**Key Props**:
+- `color` - badge color
+- `variant` - visual style
+- `size` - badge size
+- `radius` - border radius
+- `leftSection` - content before label
+- `rightSection` - content after label
+
+### Table
+**Purpose**: Data table
+**Key Props**:
+- `striped` - adds striped rows
+- `highlightOnHover` - highlights row on hover
+- `withBorder` - adds outer border
+- `withColumnBorders` - adds column borders
+
+### Accordion
+**Purpose**: Expandable content sections
+**Key Props**:
+- `defaultValue` - initially expanded item
+- `multiple` - allows multiple open items
+- `chevronPosition` - chevron position
+- `variant` - visual style
+- `radius` - border radius
+
+**Mobile-First Usage**:
+```tsx
+<Accordion 
+  defaultValue="item1"
+  radius={{ base: 'xs', md: 'md' }}
+>
+  <Accordion.Item value="item1">
+    <Accordion.Control>Item 1</Accordion.Control>
+    <Accordion.Panel>Content 1</Accordion.Panel>
+  </Accordion.Item>
+  <Accordion.Item value="item2">
+    <Accordion.Control>Item 2</Accordion.Control>
+    <Accordion.Panel>Content 2</Accordion.Panel>
+  </Accordion.Item>
+</Accordion>
+```
+
+### Timeline
+**Purpose**: Vertical timeline of events
+**Key Props**:
+- `active` - index of active item
+- `bulletSize` - size of bullets
+- `lineWidth` - width of line
+- `color` - active color
+- `radius` - bullet radius
+
+### Skeleton
+**Purpose**: Loading placeholder
+**Key Props**:
+- `height` - height (responsive)
+- `width` - width (responsive)
+- `circle` - makes circular shape
+- `radius` - border radius
+- `animate` - enables animation
+
+**Mobile-First Usage**:
+```tsx
+<Skeleton 
+  height={{ base: 100, md: 200 }}
+  width={{ base: '100%', md: '70%' }}
+  radius="md"
+/>
+```
+
+## Actions
+
+### Button
+**Purpose**: Action button
+**Key Props**:
+- `variant` - visual style
+- `color` - button color
+- `size` - button size
+- `radius` - border radius
+- `leftIcon` - icon before label
+- `rightIcon` - icon after label
+- `loading` - shows loading state
+- `loaderPosition` - position of loader
+- `fullWidth` - takes full width
+
+**Mobile-First Usage**:
+```tsx
+<Button
+  variant="filled"
+  color="blue"
+  size={{ base: 'sm', md: 'md' }}
+  radius="md"
+  fullWidth={{ base: true, sm: false }}
+>
+  Submit
+</Button>
+```
+
+### ActionIcon
+**Purpose**: Icon button
+**Key Props**:
+- `variant` - visual style
+- `color` - button color
+- `size` - button size
+- `radius` - border radius
+- `loading` - shows loading state
+
+### CopyButton
+**Purpose**: Copies content to clipboard
+**Key Props**:
+- `value` - text to copy
+- `timeout` - success state duration
+
+### FileButton
+**Purpose**: Button that opens file picker
+**Key Props**:
+- `accept` - file types to accept
+- `multiple` - allow multiple files
+- `children` - render function with props
+
+### ButtonGroup
+**Purpose**: Group of connected buttons
+**Key Props**:
+- `orientation` - 'horizontal' or 'vertical' 
+- `position` - horizontal alignment
+
+### Menu
+**Purpose**: Dropdown menu
+**Key Props**:
+- `opened` - controlled open state
+- `position` - menu position
+- `shadow` - shadow style
+- `width` - menu width
+- `offset` - offset from target
+
+**Mobile-First Usage**:
+```tsx
+<Menu
+  width={{ base: '100%', md: 220 }}
+  shadow="md"
+  position="bottom-end"
+>
+  <Menu.Target>
+    <Button>Actions</Button>
+  </Menu.Target>
+  <Menu.Dropdown>
+    <Menu.Item icon={<IconEdit />}>Edit</Menu.Item>
+    <Menu.Item icon={<IconTrash />} color="red">Delete</Menu.Item>
+  </Menu.Dropdown>
+</Menu>
+```
+
+## Utility Components
+
+### Paper
+**Purpose**: Surface container
+**Key Props**:
+- `shadow` - shadow style
+- `radius` - border radius
+- `withBorder` - adds border
+- `p` - padding
+
+### Collapse
+**Purpose**: Animated expandable content
+**Key Props**:
+- `in` - visibility state
+- `transitionDuration` - animation duration
+- `transitionTimingFunction` - animation timing
+
+### AppShell
+**Purpose**: Full app layout with header, navbar, footer
+**Key Props**:
+- `header` - header height
+- `footer` - footer height
+- `padding` - main content padding
+- `navbar` - navbar component
+- `aside` - aside component
+
+**Mobile-First Usage**:
+```tsx
+<AppShell
+  padding={{ base: 'md', lg: 'xl' }}
+  navbar={{
+    width: { base: 0, md: 200, lg: 300 },
+    breakpoint: 'md',
+    collapsed: { mobile: !opened }
+  }}
+  header={{ height: 60 }}
+>
+  <AppShell.Header>{/* Header content */}</AppShell.Header>
+  <AppShell.Navbar>{/* Navbar content */}</AppShell.Navbar>
+  <AppShell.Main>{/* Main content */}</AppShell.Main>
+</AppShell>
+```
+
+### AspectRatio
+**Purpose**: Maintains aspect ratio of content
+**Key Props**:
+- `ratio` - width/height ratio
+
+### Center
+**Purpose**: Centers content on both axes
+**Key Props**:
+- `inline` - centers content inline
+
+### ScrollArea
+**Purpose**: Custom scrollable container
+**Key Props**:
+- `type` - scrollbar type
+- `h` - height
+- `offsetScrollbars` - offset scrollbars
+- `scrollbarSize` - scrollbar size
+
+### Divider
+**Purpose**: Visual separator
+**Key Props**:
+- `orientation` - 'horizontal' or 'vertical'
+- `size` - divider thickness
+- `color` - divider color
+- `label` - optional label
+- `labelPosition` - label position
+
+## Visibility & Responsiveness
+
+### MediaQuery
+**Purpose**: Conditionally renders based on viewport
+**Key Props**:
+- `smallerThan` - renders if viewport is smaller than breakpoint
+- `largerThan` - renders if viewport is larger than breakpoint
+
+### HoverCard
+**Purpose**: Content that appears on hover
+**Key Props**:
+- `width` - card width
+- `shadow` - shadow style
+- `openDelay` - delay before opening
+- `closeDelay` - delay before closing
+
+### Portal
+**Purpose**: Renders content at document.body
+**Key Props**:
+- `target` - target node to render in (optional)
+
+### VisuallyHidden
+**Purpose**: Hides content visually but keeps it accessible
+**Key Props**:
+- No specific props, wraps content
+
+### Space
+**Purpose**: Empty space with height
+**Key Props**:
+- `h` - space height (responsive)
+- `w` - space width (responsive)
+
+## Visibility Helpers
+
+Use these props and components to show/hide content responsively:
+
+### Responsive Display Props
+- `hiddenFrom` - hide element from breakpoint and up
+- `visibleFrom` - show element from breakpoint and up
+
+**Usage**:
+```tsx
+<Box hiddenFrom="md">
+  Mobile content only
+</Box>
+
+<Box visibleFrom="md">
+  Desktop content only
+</Box>
+```
+
+## Theme Access
+
+### useMantineTheme
+**Purpose**: Access theme values in component logic
+**Usage**:
+```tsx
+import { useMantineTheme } from '@mantine/core';
+
+function Component() {
+  const theme = useMantineTheme();
+  // Access theme.breakpoints, theme.colors, etc.
+}
+```
+
+## Resources
+
+1. [Complete Mantine UI Documentation](https://mantine.dev/getting-started/)
+2. [Mantine Component Library](https://mantine.dev/core/button/)
+3. [Mantine Hooks Library](https://mantine.dev/hooks/use-id/)
+4. [Mantine Form Library](https://mantine.dev/form/use-form/)

@@ -1,0 +1,9 @@
+---
+description: When implementing state persistence or checkpoint systems
+globs: 
+alwaysApply: false
+---
+Agent Behavior:
+- Define clear serialization/deserialization boundaries
+- Prefer JSON or binary formats with schema versioning
+- Always test corrupted or partial load states

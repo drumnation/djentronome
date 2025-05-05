@@ -1,0 +1,58 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Rule: Use Monorepo Documentation
+
+## Purpose
+Ensure the agent always consults and contributes to documentation **at the correct monorepo scope**. This rule helps avoid duplicated knowledge, improves doc discoverability, and maintains up-to-date package-level documentation.
+
+## When to Apply
+This rule is automatically applied when the agent is working inside a monorepo project structure (detected via presence of `pnpm-workspace.yaml`, `turbo.json`, or `apps/` + `packages/` folders).
+
+## Behavior
+
+### 1. Documentation Lookup Priority
+When searching for relevant documentation:
+- ✅ **First**, look for `docs/` within the **current package or app** (e.g., `packages/ui/docs/`, `apps/auth/docs/`)
+- ✅ **Then**, check shared or global areas:
+  - `docs/features/`, `docs/concepts/`, `docs/architecture/`
+  - Root-level docs such as `docs/index.md` or `README.md`
+- ✅ Use `.index.md` files inside each folder to guide lookup
+- ⛔ NEVER assume knowledge lives only in root-level documentation
+
+### 2. Writing Documentation
+When generating new domain knowledge (design rationale, config notes, tricky logic, etc.):
+- ✅ Create the `.md` file **inside the relevant package or app's `docs/` folder**
+- ✅ Include full YAML frontmatter and a clear abstract (see `project-documentation-structure.rules.mdc`)
+- ✅ Link to related package docs via relative paths
+- ✅ Update local `docs.index.md` and parent `packages.index.md` if applicable
+- ✅ If no local `docs/` folder exists, create one if package-level domain knowledge is appropriate
+
+### 3. Avoid Duplication
+- ✅ Search for existing documents using:
+  - `.index.md` files
+  - `keywords` in frontmatter
+  - Fuzzy matching of headings/titles
+- ✅ Add to or update existing docs instead of duplicating
+
+## Cross-Linking Standards
+- ✅ Prefer relative paths (e.g., `../../shared/docs/config.md`)
+- ✅ Use @ notation when referencing agent-readable documentation (`@docs/packages/ui/index.md`)
+
+## Example Triggers
+- “Why does the form library re-export Zod?”
+- “Document why `auth-api` handles tokens this way.”
+- “Update the usage examples for the Button component.”
+- “Create docs for our Stripe integration in the billing package.”
+
+## Related Rules
+- `project-documentation-structure.rules.mdc`
+- `auto-generate-docs-index.rules.mdc`
+- `update-feature-tasks.rules.mdc`
+- `wrap-third-party-ui.rules.mdc`
+
+## Related Prompts
+- `routine/documentation/use-monorepo-docs.prompt.md`
+- `routine/workflows/consult-docs.workflow.md

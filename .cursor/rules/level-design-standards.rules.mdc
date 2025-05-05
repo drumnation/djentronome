@@ -1,0 +1,9 @@
+---
+description: During level creation, tuning, or placement of interactables
+globs: 
+alwaysApply: false
+---
+Agent Behavior:
+- Define consistent unit scales and spacing
+- Use metrics (e.g., jump height, enemy detection range) to design levels
+- Tag and categorize assets/tiles for clarity and reuse

@@ -1,0 +1,8 @@
+---
+description:  When implementing follow, pan, zoom, or screen shake behavior
+globs: 
+alwaysApply: false
+---
+Agent Behavior:
+- Ensure camera respects world bounds
+- Use smoothing or lerp functions for fluid motion

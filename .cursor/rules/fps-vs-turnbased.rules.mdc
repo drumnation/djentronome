@@ -1,0 +1,9 @@
+---
+description: - When designing the game loop or core mechanics - When deciding between real-time and turn-based systems
+globs: 
+alwaysApply: false
+---
+Agent Behavior:
+- Decide early: real-time (fps) or turn-based loop
+- Avoid hybrid systems unless strongly justified
+- Sync animation and input expectations accordingly

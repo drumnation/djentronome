@@ -1,0 +1,33 @@
+---
+description: 
+globs: core-loop/**,packages/audio-engine/**
+alwaysApply: false
+---
+/**
+ * Rule: Convert BPM and time to vertical scroll position
+ * Purpose: Keep note elements in sync with audio playback
+ */
+
+export const bpmSync = {
+  /**
+   * Converts time and BPM to scroll position (Y offset)
+   * @param timeSec Elapsed time in seconds (typically from Web Audio or store)
+   * @param bpm Beats per minute
+   * @param laneHeight Distance between beats in world units
+   * @returns Current Y position to align scrolling content
+   */
+  scrollOffset(timeSec: number, bpm: number, laneHeight = 1): number {
+    const beatsPerSec = bpm / 60
+    return -timeSec * beatsPerSec * laneHeight
+  },
+
+  /**
+   * Converts beat timing (in seconds) to Y position
+   * for rendering a note that should land at `y=0`
+   */
+  noteY(noteTimeSec: number, currentTimeSec: number, bpm: number, laneHeight = 1): number {
+    const delta = noteTimeSec - currentTimeSec
+    const beatsPerSec = bpm / 60
+    return delta * beatsPerSec * laneHeight
+  },
+}
