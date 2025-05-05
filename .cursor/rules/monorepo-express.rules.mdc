@@ -1,6 +1,6 @@
 ---
 description: 
-globs: 
+globs: apps/game-server/**
 alwaysApply: false
 ---
 Node.js/Express API Best Practices & Structure (PNPM Monorepo Focus)

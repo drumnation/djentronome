@@ -1,0 +1,71 @@
+# Functional Testing Principles
+
+This rule applies to all core library testing to ensure that we focus on functional testing rather than implementation details.
+
+## Pattern
+- All files under "packages/core-*/src/**/*.ts" should follow these principles
+- Test files should have the ".test.ts" extension
+
+## Purpose
+Ensure that all core packages have tests that focus on functionality rather than implementation, making the tests more resilient to refactoring.
+
+## Guidelines
+
+### DO:
+- ✅ Test the public API of the module
+- ✅ Focus on input/output behavior
+- ✅ Test edge cases and error conditions
+- ✅ Write tests that validate the intended functionality
+- ✅ Use clear test descriptions that specify the expected behavior
+
+### DON'T:
+- ❌ Test implementation details
+- ❌ Mock internal functions
+- ❌ Rely on specific implementation structure
+- ❌ Test private methods directly
+- ❌ Make tests brittle to refactoring
+
+## Examples
+
+### Good Example:
+```typescript
+import { gameState, createGameState } from './game-state';
+
+describe('Game State', () => {
+  it('should track player position correctly', () => {
+    const state = createGameState();
+    state.updatePlayerPosition({ x: 10, y: 20 });
+    expect(state.getPlayerPosition()).toEqual({ x: 10, y: 20 });
+  });
+
+  it('should handle collisions with obstacles', () => {
+    const state = createGameState({
+      obstacles: [{ x: 10, y: 10, width: 5, height: 5 }]
+    });
+    
+    state.updatePlayerPosition({ x: 12, y: 12 });
+    expect(state.isPlayerColliding()).toBe(true);
+  });
+});
+```
+
+### Bad Example:
+```typescript
+import { gameState, createGameState } from './game-state';
+
+describe('Game State', () => {
+  it('should use the correct internal data structure', () => {
+    const state = createGameState();
+    // BAD: Tests internal implementation
+    expect(state._internalPositionCache).toBeDefined();
+  });
+
+  it('should call the collision detector', () => {
+    const state = createGameState();
+    // BAD: Tests implementation details, not behavior
+    const spy = jest.spyOn(state, '_detectCollision');
+    state.updatePlayerPosition({ x: 10, y: 10 });
+    expect(spy).toHaveBeenCalled();
+  });
+});
+``` 

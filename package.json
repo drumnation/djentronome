@@ -1,6 +1,7 @@
 {
 	"name": "djentronome",
 	"version": "0.1.0",
+	"packageManager": "pnpm@9.0.0",
 	"scripts": {
 		"download-track": "ts-node scripts/download-djent-track.ts",
 		"build": "turbo run build",
