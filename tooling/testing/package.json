@@ -1,0 +1,52 @@
+{
+  "name": "@kit/testing",
+  "private": true,
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "author": "David Mieloch <david@mieloch.com>",
+  "description": "Shared Vitest configurations for Brain Garden monorepo",
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier --check \"**/*.{ts,tsx}\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./unit": "./src/unit.ts",
+    "./integration": "./src/integration.ts",
+    "./e2e": "./src/e2e.ts",
+    "./base": "./src/base.ts"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@kit/eslint-config/base",
+      "@kit/eslint-config/sort"
+    ]
+  },
+  "prettier": "@kit/prettier-config",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "src/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "vitest": "^1.2.1",
+    "@vitest/coverage-v8": "^1.2.1",
+    "@testing-library/jest-dom": "^6.2.0",
+    "jsdom": "^23.2.0"
+  },
+  "devDependencies": {
+    "@kit/eslint-config": "workspace:*",
+    "@kit/prettier-config": "workspace:*",
+    "@kit/tsconfig": "workspace:*",
+    "@types/node": "^20.11.5",
+    "tsx": "^4.7.0"
+  },
+  "peerDependencies": {
+    "vitest": "^1.2.1"
+  }
+}

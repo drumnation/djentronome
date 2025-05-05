@@ -47,16 +47,16 @@ describe('Input state functions', () => {
 describe('Default bindings', () => {
   it('should have keyboard bindings', () => {
     expect(defaultBindings.keyboard).toBeDefined();
-    expect(defaultBindings.keyboard.Space).toBe('Jump');
+    expect(defaultBindings.keyboard['Space']).toBe('Jump');
   });
 
   it('should have gamepad bindings', () => {
     expect(defaultBindings.gamepad).toBeDefined();
-    expect(defaultBindings.gamepad.button0).toBe('Jump');
+    expect(defaultBindings.gamepad['button0']).toBe('Jump');
   });
 
   it('should have touch bindings', () => {
     expect(defaultBindings.touch).toBeDefined();
-    expect(defaultBindings.touch.buttonA).toBe('Jump');
+    expect(defaultBindings.touch['buttonA']).toBe('Jump');
   });
 }); 

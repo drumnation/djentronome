@@ -1,9 +1,15 @@
 {
-  "extends": "./tooling/tsconfig/base.json",
-  "files": [],
-  "references": [
-    { "path": "./tooling/tsconfig" },
-    { "path": "./tooling/eslint-config" },
-    { "path": "./tooling/prettier-config" }
-  ]
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true
+  },
+  "include": ["scripts/**/*.ts"],
+  "exclude": ["node_modules", "**/node_modules", "dist", "**/dist"]
 } 

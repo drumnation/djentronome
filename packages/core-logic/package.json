@@ -1,5 +1,5 @@
 {
-  "name": "@kit/core-logic",
+  "name": "@djentronome/core-logic",
   "version": "0.1.0",
   "main": "src/index.ts",
   "exports": {
@@ -7,20 +7,20 @@
   },
   "license": "MIT",
   "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier --check \"**/*.{ts,tsx}\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@kit/tsconfig": "workspace:*",
     "@kit/eslint-config": "workspace:*",
-    "@kit/prettier-config": "workspace:*",
-    "vitest": "^1.3.0"
+    "@kit/prettier-config": "workspace:*"
   },
   "eslintConfig": {
     "root": true,
     "extends": [
       "@kit/eslint-config/base",
-      "@kit/eslint-config/vitest",
       "@kit/eslint-config/sort"
     ]
   },

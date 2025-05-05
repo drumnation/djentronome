@@ -1,5 +1,5 @@
 {
-  "name": "@kit/input",
+  "name": "@djentronome/input",
   "version": "0.1.0",
   "main": "src/index.ts",
   "exports": {
@@ -8,7 +8,11 @@
   "license": "MIT",
   "scripts": {
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier --check \"**/*.{ts,tsx}\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@kit/tsconfig": "workspace:*",

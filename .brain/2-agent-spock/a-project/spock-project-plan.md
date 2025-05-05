@@ -1,0 +1,23 @@
+# Agent Plan: Spock (Core Systems & MIDI)
+
+**Project:** Djentronome
+
+**Last Updated:** 2024-10-27
+
+**Main Project Plan:** [Link to .brain/project-plan.md](../../project-plan.md)
+
+## Assigned Features:
+
+*   `[ ]` F1: Monorepo & Tooling Setup
+*   `[ ]` F2: Core Packages Scaffolding
+*   `[ ]` F4: Web MIDI Integration (Alesis Nitro Kick/Snare)
+*   `[ ]` F5: Static Pattern Loader & Format
+*   `[ ]` F6: Basic Game Loop
+*   `[ ]` F8: Hit Detection & Basic Scoring
+*   `[ ]` F12: Latency Calibration Tool (Logic Aspects)
+*   `[ ]` F16: Testing & QA (Core Functionality)
+*   `[ ]` F17: Documentation (Basic User/Dev) (Should Have)
+
+## Instructions:
+
+For each assigned feature, create a detailed task plan in the `b-features` directory using the `create-feature-task-plan-from-project-plan.md` template (or similar guidance). Reference relevant rules and skill-jacks. 

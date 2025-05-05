@@ -1,11 +1,17 @@
 {
-  "name": "@kit/core-audio",
+  "name": "@djentronome/core-audio",
   "version": "0.1.0",
   "main": "src/index.ts",
   "exports": {
     ".": "./src/index.ts"
   },
   "license": "MIT",
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier --check \"**/*.{ts,tsx}\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
   "devDependencies": {
     "@kit/tsconfig": "workspace:*",
     "@kit/eslint-config": "workspace:*",

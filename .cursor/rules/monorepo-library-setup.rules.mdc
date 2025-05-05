@@ -13,11 +13,18 @@ alwaysApply: true
 /tooling - libraries consumed by apps and packages to setup shared monorepo tooling
 ```
 
+## Monorepo naming patterns
+
+/apps - @[app-name]/*
+/packages - @[app-name]/*
+/tooling - @kit/*
+
 ## IF the library is an app in the ./apps folder
 
 1. In the package.json:
 ```json
    {
+    "name": "@[app-name]/[package-name]",
     "scripts": {
       "clean": "git clean -xdf .turbo node_modules",
       "format": "prettier --check \"**/*.{ts,tsx}\"",
@@ -70,6 +77,7 @@ alwaysApply: true
 1. The package.json needs exports
 
 ```json
+  "name": "@[app-name]/[package-name]",
   "exports": {
     ".": "./src/index.ts",
     "./types": "./src/types/index.ts"
@@ -86,26 +94,20 @@ alwaysApply: true
 
 ```txt
 📁 tooling
-    ├── 📁 eslint-config
-│       ├── 📄 eslint-config/base.js
-│   │   ├── 📄 eslint-config/index.js
-│   │   ├── 📁 eslint-config/node_modules
-│   │   │   ├── 📁 eslint-config/node_modules/@typescript-eslint
-│   │   │   │   ├── 📄 eslint-config/node_modules/@typescript-eslint/eslint-plugin
-│   │   │   │   └── 📄 eslint-config/node_modules/@typescript-eslint/parser
-│   │   │   ├── 📄 eslint-config/node_modules/eslint
-│   │   │   ├── 📄 eslint-config/node_modules/eslint-config-prettier
-│   │   │   ├── 📄 eslint-config/node_modules/eslint-plugin-import
-│   │   │   └── 📄 eslint-config/node_modules/eslint-plugin-simple-import-sort
-│   │   ├── 📄 eslint-config/package.json
-│   │   └── 📄 eslint-config/sort.js
-│   ├── 📁 prettier-config
-│   │   ├── 📄 prettier-config/index.json
-│   │   └── 📄 prettier-config/package.json
+    ├── 📁 eslint
+│   ├── 📁 prettier
+│   ├── 📁 testing
 │   └── 📁 tsconfig
-│       ├── 📄 tsconfig/base.json
-│       ├── 📄 tsconfig/node.json
-│       └── 📄 tsconfig/package.json
+```
+
+2. tooling
+
+```json
+  "name": "@kit/[package-name]",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types/index.ts"
+  },
 ```
 
 2. pnpm workspaces settings for reference

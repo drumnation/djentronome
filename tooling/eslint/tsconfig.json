@@ -1,0 +1,10 @@
+{
+  "extends": "@kit/tsconfig/base",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true
+  },
+  "include": ["*.js", "*.ts"],
+  "exclude": ["node_modules"]
+}

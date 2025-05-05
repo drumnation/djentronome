@@ -1,0 +1,15 @@
+{
+  "name": "@kit/prettier-config",
+  "private": true,
+  "version": "0.1.0",
+  "main": "index.mjs",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "format": "prettier --check \"**/*.mjs\""
+  },
+  "devDependencies": {
+    "@kit/tsconfig": "workspace:^",
+    "prettier": "^3.4.2"
+  },
+  "prettier": "./index.mjs"
+}

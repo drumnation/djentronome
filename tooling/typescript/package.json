@@ -1,0 +1,14 @@
+{
+  "name": "@kit/tsconfig",
+  "private": true,
+  "version": "0.1.0",
+  "files": [
+    "base.json"
+  ],
+  "exports": {
+    "./base": "./base.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

@@ -67,4 +67,23 @@ UI components can be developed and tested using Storybook:
 # Start Storybook
 cd apps/game-ui
 pnpm storybook
-``` 
+```
+
+## 🧠 Multi-Agent Development
+
+This project is configured for development using specialized AI agents (Tony Stark, Spock, Q), each with their own set of rules and skill-jacks stored in the `.brain/` directory.
+
+To switch the active agent context for AI tools (like Cursor), use the `change-agent` script:
+
+```bash
+# Switch to Agent Tony Stark (Frontend)
+pnpm change-agent 1-agent-tony-stark
+
+# Switch to Agent Spock (Core Systems)
+pnpm change-agent 2-agent-spock
+
+# Switch to Agent Q (Audio/Transcription)
+pnpm change-agent 3-agent-q
+```
+
+This command updates the `.brain/config.json` and merges the selected agent's specific rules from `.brain/[agent-id]/.cursorrules` into the root `.cursorrules` file, making their context active. 

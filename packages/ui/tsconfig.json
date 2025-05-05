@@ -1,6 +1,7 @@
 {
-  "extends": "@kit/tsconfig/react",
+  "extends": "@kit/tsconfig/base",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {},
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
