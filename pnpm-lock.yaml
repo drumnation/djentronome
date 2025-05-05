@@ -109,70 +109,7 @@ importers:
         specifier: ^1.3.0
         version: 1.6.1(@types/node@22.15.3)(jsdom@26.1.0)
 
-  packages/ai:
-    devDependencies:
-      '@kit/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint
-      '@kit/prettier-config':
-        specifier: workspace:*
-        version: link:../../tooling/prettier
-      '@kit/testing':
-        specifier: workspace:*
-        version: link:../../tooling/testing
-      '@kit/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/typescript
-
-  packages/animation:
-    devDependencies:
-      '@kit/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint
-      '@kit/prettier-config':
-        specifier: workspace:*
-        version: link:../../tooling/prettier
-      '@kit/testing':
-        specifier: workspace:*
-        version: link:../../tooling/testing
-      '@kit/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/typescript
-
   packages/assets:
-    devDependencies:
-      '@kit/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint
-      '@kit/prettier-config':
-        specifier: workspace:*
-        version: link:../../tooling/prettier
-      '@kit/testing':
-        specifier: workspace:*
-        version: link:../../tooling/testing
-      '@kit/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/typescript
-
-  packages/camera:
-    devDependencies:
-      '@kit/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint
-      '@kit/prettier-config':
-        specifier: workspace:*
-        version: link:../../tooling/prettier
-      '@kit/testing':
-        specifier: workspace:*
-        version: link:../../tooling/testing
-      '@kit/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/typescript
-      vitest:
-        specifier: ^0.34.0
-        version: 0.34.6(jsdom@26.1.0)(playwright@1.52.0)
-
-  packages/collision:
     devDependencies:
       '@kit/eslint-config':
         specifier: workspace:*
@@ -297,9 +234,6 @@ importers:
 
   packages/game-core:
     dependencies:
-      '@djentronome/collision':
-        specifier: workspace:*
-        version: link:../collision
       '@djentronome/core-audio':
         specifier: workspace:*
         version: link:../core-audio
@@ -381,6 +315,21 @@ importers:
         specifier: ^0.34.0
         version: 0.34.6(jsdom@26.1.0)(playwright@1.52.0)
 
+  packages/sound:
+    devDependencies:
+      '@kit/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@kit/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@kit/testing':
+        specifier: workspace:*
+        version: link:../../tooling/testing
+      '@kit/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+
   packages/test-utils:
     devDependencies:
       '@kit/eslint-config':
@@ -396,8 +345,8 @@ importers:
         specifier: workspace:*
         version: link:../../tooling/typescript
       vitest:
-        specifier: ^0.34.0
-        version: 0.34.6(jsdom@26.1.0)(playwright@1.52.0)
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@22.15.3)(jsdom@26.1.0)
 
   packages/ui:
     devDependencies:
@@ -407,6 +356,21 @@ importers:
       '@kit/prettier-config':
         specifier: workspace:*
         version: link:../../tooling/prettier
+      '@kit/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+
+  packages/utils:
+    devDependencies:
+      '@kit/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@kit/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@kit/testing':
+        specifier: workspace:*
+        version: link:../../tooling/testing
       '@kit/tsconfig':
         specifier: workspace:*
         version: link:../../tooling/typescript
@@ -502,7 +466,7 @@ importers:
   tooling/testing:
     dependencies:
       '@playwright/test':
-        specifier: ^1.44.0
+        specifier: ^1.40.0
         version: 1.52.0
       '@testing-library/jest-dom':
         specifier: ^6.2.0
@@ -514,7 +478,7 @@ importers:
         specifier: ^23.2.0
         version: 23.2.0
       vitest:
-        specifier: ^1.2.1
+        specifier: ^1.0.0
         version: 1.6.1(@types/node@20.17.32)(jsdom@23.2.0)
     devDependencies:
       '@kit/eslint-config':
@@ -529,9 +493,9 @@ importers:
       '@types/node':
         specifier: ^20.11.5
         version: 20.17.32
-      tsx:
-        specifier: ^4.7.0
-        version: 4.19.4
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
 
   tooling/typescript:
     devDependencies:

@@ -25,7 +25,6 @@
   },
   "dependencies": {
     "@djentronome/game-loop": "workspace:*",
-    "@djentronome/collision": "workspace:*",
     "@djentronome/input": "workspace:*",
     "@djentronome/core-audio": "workspace:*",
     "@djentronome/core-graphics": "workspace:*",
