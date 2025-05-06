@@ -32,23 +32,29 @@ export class PatternValidator {
     const errors: string[] = [];
     const detailedErrors: ValidationError[] = [];
     
+    // Run validation checks
     this.validateBasicFields(pattern, errors, detailedErrors);
     this.validateMetadata(pattern, errors, detailedErrors);
     this.validateContent(pattern, errors, detailedErrors);
     
+    // If we have sections, validate them
     if (pattern.sections && pattern.sections.length > 0) {
       this.validateSections(pattern.sections, errors, detailedErrors);
     }
     
+    // If we have notes, validate them
     if (pattern.notes && pattern.notes.length > 0) {
       this.validateNotes(pattern.notes, errors, detailedErrors);
     }
     
+    // Determine if validation passed
     const valid = errors.length === 0;
     
+    // Return validation result
     return {
       valid,
       errors,
+      // Only include detailedErrors if there are validation failures
       ...(valid ? {} : { detailedErrors })
     };
   }
@@ -169,11 +175,18 @@ export class PatternValidator {
    * @param detailedErrors - Array to collect detailed error objects
    */
   private validateContent(
-    pattern: Pattern,
-    errors: string[],
-    detailedErrors: ValidationError[]
+    _pattern: Pattern,
+    _errors: string[],
+    _detailedErrors: ValidationError[]
   ): void {
-    // Add any additional content validation rules here
+    // This is a placeholder for future content validation rules
+    // Currently no specific content validation is performed at this level
+    // Any future specialized validations can be added here
+    
+    // Example possible validations for future implementation:
+    // - Cross-validations between notes and sections
+    // - Integrity checks for linked audio files
+    // - Validation of pattern duration against notes/sections
   }
 
   /**

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { PatternLoader } from '../pattern-loader';
-import { DifficultyLevel } from '../types';
+import { DifficultyLevel, PatternSection } from '../types';
 import fs from 'fs';
 import path from 'path';
 
@@ -25,7 +25,7 @@ const mockFetchFromFileSystem = () => {
         status: 200,
         statusText: 'OK',
         headers: new Headers()
-      } as Response;
+      } as unknown as Response;
     } catch (error) {
       console.error('Error reading file', filePath, error);
       return {
@@ -33,7 +33,7 @@ const mockFetchFromFileSystem = () => {
         status: 404,
         statusText: 'File not found',
         headers: new Headers()
-      } as Response;
+      } as unknown as Response;
     }
   });
   
@@ -78,9 +78,18 @@ describe('PatternLoader - File Loading (Integration)', () => {
       expect(pattern.metadata.title).toBe('Basic Rock Beat');
       expect(pattern.metadata.difficulty).toBe(DifficultyLevel.BEGINNER);
       
-      // Use non-null assertions since we know these exist in the test data
-      expect(pattern.sections!).toHaveLength(1);
-      expect(pattern.sections![0].notes).toHaveLength(16);
+      // Check sections exist before testing properties
+      expect(pattern.sections).toBeDefined();
+      expect(pattern.sections).not.toBeNull();
+      expect(pattern.sections!.length).toBe(1);
+      
+      // Ensure first section exists before testing its notes
+      const sections = pattern.sections!;
+      expect(sections[0]).toBeDefined();
+      
+      // Now we can safely use non-null assertions
+      const firstSection = sections[0]!;
+      expect(firstSection.notes).toHaveLength(16);
     } finally {
       // Restore original fetch
       global.fetch = originalFetch;
@@ -110,13 +119,14 @@ describe('PatternLoader - File Loading (Integration)', () => {
       const sectionIds = sections.map(section => section.id);
       expect(sectionIds).toEqual(['intro', 'verse', 'outro']);
       
-      // Verify time boundaries
-      expect(sections[0].startTime).toBe(0);
-      expect(sections[0].endTime).toBe(8000);
-      expect(sections[1].startTime).toBe(8000);
-      expect(sections[1].endTime).toBe(16000);
-      expect(sections[2].startTime).toBe(16000);
-      expect(sections[2].endTime).toBe(24000);
+      // Verify time boundaries with type assertion after verifying length
+      const verifiedSections = sections as [PatternSection, PatternSection, PatternSection];
+      expect(verifiedSections[0].startTime).toBe(0);
+      expect(verifiedSections[0].endTime).toBe(8000);
+      expect(verifiedSections[1].startTime).toBe(8000);
+      expect(verifiedSections[1].endTime).toBe(16000);
+      expect(verifiedSections[2].startTime).toBe(16000);
+      expect(verifiedSections[2].endTime).toBe(24000);
       
       // Verify total duration
       expect(pattern.duration).toBe(24000);
@@ -135,7 +145,7 @@ describe('PatternLoader - File Loading (Integration)', () => {
         status: 404,
         statusText: 'File not found',
         headers: new Headers()
-      } as Response);
+      } as unknown as Response);
     });
     
     try {
@@ -160,7 +170,7 @@ describe('PatternLoader - File Loading (Integration)', () => {
         status: 200,
         statusText: 'OK',
         headers: new Headers()
-      } as Response);
+      } as unknown as Response);
     });
     
     try {
@@ -191,7 +201,7 @@ describe('PatternLoader - File Loading (Integration)', () => {
         status: 200,
         statusText: 'OK',
         headers: new Headers()
-      } as Response);
+      } as unknown as Response);
     });
     
     try {

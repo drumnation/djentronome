@@ -102,7 +102,7 @@ export class MIDIHandler {
   /**
    * Handle MIDI state change events (connection/disconnection)
    */
-  private handleStateChange(event: WebMidi.MIDIConnectionEvent): void {
+  private handleStateChange(_event: WebMidi.MIDIConnectionEvent): void {
     // Reconnect to devices
     this.connectToDevices();
     
@@ -140,6 +140,11 @@ export class MIDIHandler {
     
     // Status byte determines the message type
     const statusByte = data[0];
+    
+    // Safety check - if no status byte, return the unknown message
+    if (statusByte === undefined) {
+      return message;
+    }
     
     // Extract MIDI channel (lower 4 bits of status byte)
     const channel = statusByte & 0x0F;
@@ -190,14 +195,14 @@ export class MIDIHandler {
         
       case 0xE0: // Pitch Bend
         message.type = MIDIMessageType.PITCH_BEND;
-        message.value = (data[2] << 7) + data[1]; // Combine MSB and LSB
+        message.value = ((data[2] || 0) << 7) + (data[1] || 0); // Combine MSB and LSB with null safety
         message.channel = channel;
         break;
         
       case 0xF0: // System messages
-        if (data[0] === 0xF0) {
+        if (statusByte === 0xF0) {
           message.type = MIDIMessageType.SYSEX;
-        } else if (data[0] === 0xF8) {
+        } else if (statusByte === 0xF8) {
           message.type = MIDIMessageType.TIMING_CLOCK;
         }
         break;

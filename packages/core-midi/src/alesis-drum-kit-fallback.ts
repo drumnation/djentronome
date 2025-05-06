@@ -80,7 +80,7 @@ export class AlesisDrumKitFallback {
     }
     
     // Attach keyboard event listener
-    this.options.target.addEventListener('keydown', this.boundKeyDownHandler);
+    this.options.target.addEventListener('keydown', this.boundKeyDownHandler as EventListenerOrEventListenerObject);
     
     this.isInitialized = true;
   }
@@ -181,7 +181,7 @@ export class AlesisDrumKitFallback {
    */
   cleanup(): void {
     if (this.options.target && this.isInitialized) {
-      this.options.target.removeEventListener('keydown', this.boundKeyDownHandler);
+      this.options.target.removeEventListener('keydown', this.boundKeyDownHandler as EventListenerOrEventListenerObject);
     }
     
     this.kickCallbacks.clear();

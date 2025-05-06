@@ -91,27 +91,34 @@ export class PatternUtils {
     if (patterns.length === 1) {
       // Clone the pattern with explicit typing to avoid type errors
       const pattern = patterns[0];
-      // Safe to assert pattern exists since we've checked length > 0
+      if (!pattern) {
+        throw new Error('Invalid pattern entry at index 0');
+      }
+      
+      // Safe to assert pattern exists since we've checked it's not null/undefined
       const result: Pattern = {
         id: pattern.id,
         version: pattern.version,
-        metadata: { ...pattern.metadata },
+        metadata: { ...(pattern.metadata || {}) },
         duration: pattern.duration,
-        notes: pattern.notes ? [...pattern.notes] : undefined,
+        notes: pattern.notes ? [...pattern.notes] : [],
         sections: pattern.sections ? [...pattern.sections] : undefined,
         audioFile: pattern.audioFile
       };
       return result;
     }
     
-    // Use the first pattern as the base which we know exists since length > 0
+    // Use the first pattern as the base
     const basePattern = patterns[0];
+    if (!basePattern) {
+      throw new Error('Invalid pattern entry at index 0');
+    }
     
     // Create the merged pattern with required fields
     const result: Pattern = {
       id: `merged-${basePattern.id}`,
       version: basePattern.version,
-      metadata: { ...basePattern.metadata },
+      metadata: { ...(basePattern.metadata || {}) },
       duration: 0, // Will be calculated
       notes: []
     };
@@ -125,7 +132,9 @@ export class PatternUtils {
     
     // Process each pattern
     for (const pattern of patterns) {
-      if (options.preserveSections && pattern.sections) {
+      if (!pattern) continue; // Skip undefined patterns
+      
+      if (options.preserveSections && pattern.sections && pattern.sections.length > 0) {
         // Add sections with adjusted times
         const offsetSections = pattern.sections.map(section => ({
           ...section,
@@ -169,14 +178,20 @@ export class PatternUtils {
   static filterNoteTypes(pattern: Pattern, includeTypes: string[]): Pattern {
     const result: Pattern = { ...pattern };
     
-    if (pattern.notes) {
-      result.notes = pattern.notes.filter(note => includeTypes.includes(note.type));
+    // Handle notes if they exist
+    if (pattern.notes && pattern.notes.length > 0) {
+      result.notes = pattern.notes.filter(note => 
+        note && note.type && includeTypes.includes(note.type)
+      );
     }
     
-    if (pattern.sections) {
+    // Handle sections if they exist
+    if (pattern.sections && pattern.sections.length > 0) {
       result.sections = pattern.sections.map(section => ({
         ...section,
-        notes: section.notes.filter(note => includeTypes.includes(note.type))
+        notes: section.notes.filter(note => 
+          note && note.type && includeTypes.includes(note.type)
+        )
       }));
     }
     
@@ -194,13 +209,16 @@ export class PatternUtils {
     const result: Pattern = { 
       ...pattern,
       metadata: {
-        ...pattern.metadata,
-        bpm: pattern.metadata.bpm * tempoRatio
+        ...(pattern.metadata || {}),
+        bpm: pattern.metadata?.bpm 
+          ? pattern.metadata.bpm * tempoRatio 
+          : 120 * tempoRatio
       },
       duration: Math.round(pattern.duration / tempoRatio)
     };
     
-    if (pattern.notes) {
+    // Process notes if they exist
+    if (pattern.notes && pattern.notes.length > 0) {
       result.notes = pattern.notes.map(note => ({
         ...note,
         time: Math.round(note.time / tempoRatio),
@@ -208,7 +226,8 @@ export class PatternUtils {
       }));
     }
     
-    if (pattern.sections) {
+    // Process sections if they exist
+    if (pattern.sections && pattern.sections.length > 0) {
       result.sections = pattern.sections.map(section => ({
         ...section,
         startTime: Math.round(section.startTime / tempoRatio),

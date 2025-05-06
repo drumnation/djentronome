@@ -3,17 +3,22 @@ import { LatencyCalibrator } from './latency-calibrator';
 import { 
   CalibrationStatus, 
   InputMethod, 
-  LatencyTestConfig,
-  CalibrationResponse
+  LatencyTestConfig
 } from './types';
 
-// Create global window object if needed (for Node.js environment)
-const createGlobalWindow = () => {
-  if (typeof window === 'undefined') {
-    global.window = {} as any;
+// Namespace for test utilities
+const TestUtils = {
+  // Create global window object if needed (for Node.js environment)
+  createGlobalWindow: () => {
+    if (typeof window === 'undefined') {
+      global.window = {} as any;
+    }
+    return global.window;
   }
-  return global.window;
 };
+
+// Initialize window if needed
+TestUtils.createGlobalWindow();
 
 // Mock localStorage before tests
 const setupLocalStorageMock = () => {
@@ -191,9 +196,11 @@ describe('LatencyCalibrator', () => {
       }
     });
     
-    // Mock the collectSample method
+    // Mock the collectSample method with a generic function signature
     vi.spyOn(calibrator as any, 'collectSample').mockImplementation(
-      (sampleIndex: number) => {
+      function() {
+        // Get the sample index from the first argument
+        const sampleIndex = arguments[0] as number;
         return Promise.resolve({
           signalTime: 100 * sampleIndex,
           responseTime: 100 * sampleIndex + 30,

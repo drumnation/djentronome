@@ -14,6 +14,10 @@ export {
   AlesisDrumKit,
   ALESIS_NITRO_KICK_NOTE,
   ALESIS_NITRO_SNARE_NOTE,
+} from './alesis-drum-kit';
+
+// Export types from Alesis Drum Kit
+export type {
   DrumHitEvent,
   DrumHitCallback
 } from './alesis-drum-kit';
@@ -22,11 +26,15 @@ export {
 export {
   AlesisDrumKitFallback,
   FallbackKeys,
+} from './alesis-drum-kit-fallback';
+
+// Export types from Fallback Controller
+export type {
   DrumKitFallbackOptions
 } from './alesis-drum-kit-fallback';
 
 // Export types
-export {
+export type {
   MIDIMessage,
   MIDIMessageType,
   MIDIConnectionStatus,

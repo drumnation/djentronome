@@ -34,7 +34,6 @@ export class LatencyCalibrator {
   private testConfig: LatencyTestConfig;
   private statusListeners: CalibrationStatusListener[] = [];
   private deviceSettings: Record<string, DeviceLatencySettings> = {};
-  private audioContext: AudioContext | null = null;
 
   constructor(options: LatencyCalibratorOptions = {}) {
     this.options = {

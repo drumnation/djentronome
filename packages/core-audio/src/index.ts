@@ -83,6 +83,12 @@ export class AudioEngine {
       this.masterGainNode = this.context.createGain();
       this.masterGainNode.gain.value = this.masterVolume;
       this.masterGainNode.connect(this.context.destination);
+
+      // If preloading is enabled, we would load default sounds here
+      if (this.preloadSounds) {
+        console.log('Preloading sounds is enabled, but no sounds are configured for preloading');
+        // Implementation for preloading would go here
+      }
     } catch (error) {
       console.error('Failed to initialize AudioEngine:', error);
       this.enabled = false;

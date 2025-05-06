@@ -4,8 +4,24 @@
  * A lightweight and performant ECS implementation for game development
  */
 
+import type { 
+  EntityId, 
+  Entity, 
+  ComponentType, 
+  Component, 
+  System, 
+  World 
+} from './types';
+
 export * from './entity';
 export * from './component';
 export * from './system';
 export * from './world';
-export * from './types'; 
+export type {
+  EntityId,
+  Entity,
+  ComponentType,
+  Component,
+  System,
+  World
+}; 

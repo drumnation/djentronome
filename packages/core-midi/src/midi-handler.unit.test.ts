@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { MIDIHandler } from './midi-handler';
 import { MIDIConnectionStatus, MIDIMessageType } from './types';
 
@@ -14,8 +14,8 @@ class MockMIDIInput extends EventTarget {
   state: 'connected' | 'disconnected';
   type: 'input';
   connection: string;
-  addEventListener: jest.Mock;
-  removeEventListener: jest.Mock;
+  override addEventListener: Mock;
+  override removeEventListener: Mock;
   
   constructor(id: string, name: string, manufacturer: string) {
     super();
@@ -70,7 +70,7 @@ describe('MIDIHandler', () => {
     expect(navigator.requestMIDIAccess).toHaveBeenCalled();
     expect(handler.getConnectionStatus()).toBe(MIDIConnectionStatus.CONNECTED);
     expect(handler.getDevices()).toHaveLength(1);
-    expect(handler.getDevices()[0].name).toBe('Alesis Nitro');
+    expect(handler.getDevices()[0]?.name).toBe('Alesis Nitro');
   });
   
   it('should handle permission denied errors', async () => {

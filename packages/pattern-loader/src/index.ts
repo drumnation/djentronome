@@ -14,6 +14,10 @@ export { PatternValidator } from './pattern-validator';
 // Export PatternUtils
 export { PatternUtils } from './pattern-utils';
 
+// Export PatternPlayer
+export { PatternPlayer, PatternPlayerEventType } from './pattern-player';
+export type { PatternPlayerEvent, PatternPlayerOptions } from './pattern-player';
+
 // Export types
 export type {
   Pattern,
