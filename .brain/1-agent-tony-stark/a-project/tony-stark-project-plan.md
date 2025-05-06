@@ -8,7 +8,7 @@
 
 ## Assigned Features:
 
-*   `[ ]` F3: Basic UI Shell
+*   `[x]` F3: Basic UI Shell
 *   `[ ]` F7: Gameplay Visualization (Basic)
 *   `[ ]` F11: Gameplay UI Screens
 *   `[ ]` F12: Latency Calibration Tool (UI Aspects)
