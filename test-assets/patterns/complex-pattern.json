@@ -1,0 +1,94 @@
+{
+  "pattern": {
+    "id": "complex-drum-pattern",
+    "version": "1.0",
+    "metadata": {
+      "title": "Complex Drum Pattern with Multiple Sections",
+      "artist": "Djentronome",
+      "creator": "Pattern Generator",
+      "difficulty": "hard",
+      "bpm": 140,
+      "timeSignature": "7/8",
+      "tags": ["progressive", "odd-time", "advanced"]
+    },
+    "duration": 24000,
+    "sections": [
+      {
+        "id": "intro",
+        "name": "Intro Section",
+        "startTime": 0,
+        "endTime": 8000,
+        "notes": [
+          { "time": 0, "type": "kick", "midiNote": 36, "velocity": 0.9 },
+          { "time": 500, "type": "snare", "midiNote": 38, "velocity": 0.7 },
+          { "time": 1000, "type": "kick", "midiNote": 36, "velocity": 0.8 },
+          { "time": 1500, "type": "kick", "midiNote": 36, "velocity": 0.85 },
+          { "time": 2000, "type": "snare", "midiNote": 38, "velocity": 0.9 },
+          { "time": 2500, "type": "hihat", "midiNote": 42, "velocity": 0.6 },
+          { "time": 3000, "type": "kick", "midiNote": 36, "velocity": 0.9 },
+          { "time": 3500, "type": "hihat", "midiNote": 42, "velocity": 0.7 },
+          { "time": 4000, "type": "snare", "midiNote": 38, "velocity": 1.0 },
+          { "time": 4500, "type": "kick", "midiNote": 36, "velocity": 0.8 },
+          { "time": 5000, "type": "hihat", "midiNote": 42, "velocity": 0.7 },
+          { "time": 5500, "type": "snare", "midiNote": 38, "velocity": 0.9 },
+          { "time": 6000, "type": "kick", "midiNote": 36, "velocity": 0.85 },
+          { "time": 6500, "type": "hihat", "midiNote": 42, "velocity": 0.6 },
+          { "time": 7000, "type": "snare", "midiNote": 38, "velocity": 0.95 },
+          { "time": 7500, "type": "kick", "midiNote": 36, "velocity": 0.9 }
+        ]
+      },
+      {
+        "id": "verse",
+        "name": "Verse Section",
+        "startTime": 8000,
+        "endTime": 16000,
+        "notes": [
+          { "time": 8000, "type": "crash", "midiNote": 49, "velocity": 1.0 },
+          { "time": 8000, "type": "kick", "midiNote": 36, "velocity": 1.0 },
+          { "time": 8500, "type": "hihat", "midiNote": 42, "velocity": 0.8 },
+          { "time": 9000, "type": "snare", "midiNote": 38, "velocity": 0.9 },
+          { "time": 9500, "type": "hihat", "midiNote": 42, "velocity": 0.7 },
+          { "time": 10000, "type": "kick", "midiNote": 36, "velocity": 0.85 },
+          { "time": 10500, "type": "hihat", "midiNote": 42, "velocity": 0.8 },
+          { "time": 11000, "type": "snare", "midiNote": 38, "velocity": 0.9 },
+          { "time": 11500, "type": "kick", "midiNote": 36, "velocity": 0.8 },
+          { "time": 12000, "type": "kick", "midiNote": 36, "velocity": 0.9 },
+          { "time": 12000, "type": "crash", "midiNote": 49, "velocity": 0.9 },
+          { "time": 12500, "type": "hihat", "midiNote": 42, "velocity": 0.7 },
+          { "time": 13000, "type": "snare", "midiNote": 38, "velocity": 0.85 },
+          { "time": 13500, "type": "hihat", "midiNote": 42, "velocity": 0.7 },
+          { "time": 14000, "type": "kick", "midiNote": 36, "velocity": 0.9 },
+          { "time": 14500, "type": "hihat", "midiNote": 42, "velocity": 0.8 },
+          { "time": 15000, "type": "snare", "midiNote": 38, "velocity": 0.95 },
+          { "time": 15500, "type": "hihat", "midiNote": 42, "velocity": 0.75 }
+        ]
+      },
+      {
+        "id": "outro",
+        "name": "Outro Section",
+        "startTime": 16000,
+        "endTime": 24000,
+        "notes": [
+          { "time": 16000, "type": "crash", "midiNote": 49, "velocity": 1.0 },
+          { "time": 16000, "type": "kick", "midiNote": 36, "velocity": 1.0 },
+          { "time": 16500, "type": "tom-high", "midiNote": 50, "velocity": 0.8 },
+          { "time": 17000, "type": "snare", "midiNote": 38, "velocity": 0.9 },
+          { "time": 17500, "type": "tom-mid", "midiNote": 47, "velocity": 0.85 },
+          { "time": 18000, "type": "kick", "midiNote": 36, "velocity": 0.9 },
+          { "time": 18500, "type": "tom-low", "midiNote": 45, "velocity": 0.9 },
+          { "time": 19000, "type": "snare", "midiNote": 38, "velocity": 0.85 },
+          { "time": 19500, "type": "tom-mid", "midiNote": 47, "velocity": 0.8 },
+          { "time": 20000, "type": "kick", "midiNote": 36, "velocity": 0.95 },
+          { "time": 20500, "type": "hihat", "midiNote": 42, "velocity": 0.7 },
+          { "time": 21000, "type": "snare", "midiNote": 38, "velocity": 0.9 },
+          { "time": 21500, "type": "hihat", "midiNote": 42, "velocity": 0.7 },
+          { "time": 22000, "type": "kick", "midiNote": 36, "velocity": 0.9 },
+          { "time": 22500, "type": "snare", "midiNote": 38, "velocity": 0.8 },
+          { "time": 23000, "type": "snare", "midiNote": 38, "velocity": 0.9 },
+          { "time": 23500, "type": "snare", "midiNote": 38, "velocity": 1.0 }
+        ]
+      }
+    ],
+    "audioFile": "complex-drum-pattern.mp3"
+  }
+} 

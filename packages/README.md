@@ -1,4 +1,3 @@
-
 # Packages Directory
 
 This directory contains all shared libraries and modules used throughout the Djentronome project. Each package follows a consistent structure and is published internally using workspace dependencies.
@@ -39,12 +38,16 @@ When creating a new package:
 | `core-audio` | Audio processing foundations | Handling audio playback and processing |
 | `core-graphics` | Graphics processing foundations | Rendering and visual systems |
 | `core-logic` | Core game logic and rules | Gameplay mechanics |
+| `core-midi` | MIDI device communication | Web MIDI API integration for drum kit input |
 | `debug` | Debugging utilities | Development tools |
 | `ecs` | Entity Component System | Game architecture |
 | `game-core` | Central game mechanics | Core gameplay elements |
 | `game-loop` | Game loop implementation | Animation and update cycle |
 | `game-state` | State management for game | Global and local state |
 | `input` | Input handling systems | Controllers, MIDI, keyboard |
+| `latency-calibration` | Input latency measurement and compensation | Timing calibration |
+| `pattern-loader` | Rhythm pattern loading and parsing | Game pattern management |
+| `rhythm-engine` | Core rhythm game mechanics | Hit detection, scoring, gameplay |
 | `sound` | Sound effects and music | Audio playback |
 | `test-utils` | Testing utilities | Test helpers |
 | `ui` | UI component library | Reusable UI elements |
@@ -56,15 +59,19 @@ When creating a new package:
 - **core-audio**: Audio processing, Web Audio API integration, timing synchronization
 - **core-graphics**: Rendering foundations, canvas management
 - **core-logic**: Game rules, scoring mechanics, difficulty handling
+- **core-midi**: MIDI device connection, message parsing, event handling
 
 ### Gameplay Packages
 - **game-core**: Central gameplay mechanics, note handling, gameplay rules
 - **game-loop**: Animation loop, frame timing, performance optimization
 - **game-state**: State management (using Zustand), gameplay progression
 - **ecs**: Entity Component System for managing game objects
+- **pattern-loader**: Loading and parsing rhythm patterns, pattern validation
+- **rhythm-engine**: Hit detection, scoring, game state management, input processing
+- **latency-calibration**: Measuring and compensating for input latency
 
 ### I/O Packages
-- **input**: MIDI integration for Alesis Nitro, keyboard controls, input mapping
+- **input**: Keyboard controls, input mapping
 - **sound**: Sound effects, music playback, audio feedback
 - **controls**: UI control components, settings interfaces
 

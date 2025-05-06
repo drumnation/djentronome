@@ -4,7 +4,7 @@
  * This package provides the core game engine functionality
  */
 
-import { createGameLoop } from '@djentronome/game-loop';
+import GameLoop from '@djentronome/game-loop';
 import { GameConfig, GameState, GameScene, GameHooks } from './types';
 
 /**
@@ -27,12 +27,25 @@ export function createGame(config: GameConfig, hooks: GameHooks = {}) {
   // Track current scene
   let currentScene: GameScene | null = null;
   
+  // FPS tracking
+  let frameCount = 0;
+  let lastFpsUpdateTime = 0;
+  
   // Create game loop
-  const loop = createGameLoop({
+  const loop = new GameLoop({
     fps: config.targetFps || 60,
-    update: (deltaTime) => {
+    update: (deltaTime: number) => {
       // Update game time
       state.time += deltaTime;
+      
+      // Update FPS counter
+      frameCount++;
+      const now = performance.now();
+      if (now - lastFpsUpdateTime > 1000) {
+        state.fps = Math.round(frameCount * 1000 / (now - lastFpsUpdateTime));
+        frameCount = 0;
+        lastFpsUpdateTime = now;
+      }
       
       // Update current scene if available
       if (currentScene && !state.paused) {
@@ -44,9 +57,6 @@ export function createGame(config: GameConfig, hooks: GameHooks = {}) {
       if (currentScene) {
         currentScene.render();
       }
-    },
-    onFpsUpdate: (fps) => {
-      state.fps = fps;
     }
   });
   

@@ -122,15 +122,16 @@ export class InputHandler {
   private keyboardCallbacks: Set<InputCallback> = new Set();
   private midiCallbacks: Set<InputCallback> = new Set();
   private gamepadCallbacks: Set<InputCallback> = new Set();
-  private midiEnabled: boolean = false;
+  // These will be used in future implementations
+  // TODO: Implement MIDI and gamepad input handling
   private keyboardEnabled: boolean = false;
-  private gamepadEnabled: boolean = false;
 
   /**
    * Create a new input handler
+   * @param bindings Optional custom input bindings
    */
-  constructor() {
-    // We'll initialize specific handlers when enabled
+  constructor(_bindings?: Partial<InputBindings>) {
+    // Store bindings for future implementation if needed
   }
 
   /**
