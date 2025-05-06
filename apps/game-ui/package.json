@@ -13,14 +13,24 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@djentronome/ui": "workspace:*",
+    "@emotion/react": "^11.14.0",
+    "@fontsource/orbitron": "^5.2.5",
+    "@fontsource/rajdhani": "^5.2.5",
+    "@mantine/core": "^8.0.0",
+    "@mantine/hooks": "^8.0.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^6.22.6",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
-    "@kit/tsconfig": "workspace:*",
+    "@emotion/babel-plugin": "^11.13.5",
+    "@eslint/js": "^9.26.0",
     "@kit/eslint-config": "workspace:*",
     "@kit/prettier-config": "workspace:*",
-    "@eslint/js": "^9.26.0",
+    "@kit/tsconfig": "workspace:*",
     "@storybook/addon-essentials": "^8.6.12",
     "@storybook/addon-interactions": "^8.6.12",
     "@storybook/react": "^8.6.12",
