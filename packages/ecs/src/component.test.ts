@@ -3,10 +3,9 @@ import {
   registerComponent, 
   getComponentConstructor, 
   createComponent,
-  clearComponentRegistry,
-  ComponentConstructor
+  clearComponentRegistry
 } from './component';
-import { Component } from './types';
+import { Component, ComponentConstructor } from './types';
 
 // Define a test component
 class TestComponent implements Component {

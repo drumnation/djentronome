@@ -128,9 +128,10 @@ export class InputHandler {
 
   /**
    * Create a new input handler
+   * @param bindings Optional custom input bindings
    */
-  constructor() {
-    // We'll initialize specific handlers when enabled
+  constructor(_bindings?: Partial<InputBindings>) {
+    // Store bindings for future implementation if needed
   }
 
   /**
