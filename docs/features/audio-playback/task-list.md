@@ -29,6 +29,12 @@
 - ✅ Create integration tests for audio transcription
 - ✅ Document transcription module
 
+### Game Integration
+- ✅ Develop synchronization with game events
+- [ ] Create component for connecting audio markers to game objects
+- [ ] Implement scoring system based on rhythmic accuracy
+- [ ] Add calibration tools for latency correction 
+
 ## Upcoming Tasks
 
 ### Audio Analysis
@@ -54,10 +60,4 @@
 - [ ] Optimize audio processing for lower latency
 - [ ] Implement mobile-specific optimizations
 - [ ] Add offline processing options for large files
-- [ ] Create Web Worker implementation for background processing
-
-### Game Integration
-- [ ] Develop synchronization with game events
-- [ ] Create component for connecting audio markers to game objects
-- [ ] Implement scoring system based on rhythmic accuracy
-- [ ] Add calibration tools for latency correction 
+- [ ] Create Web Worker implementation for background processing 

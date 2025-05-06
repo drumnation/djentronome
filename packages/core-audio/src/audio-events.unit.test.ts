@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AudioEngine, AudioEventType, SyncPoint, AudioEvent } from './index';
+import { AudioEngine, AudioEventType, SyncPoint } from './index';
 import * as fileLoaderModule from './file-loader';
 
 /**

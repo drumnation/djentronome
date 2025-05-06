@@ -1,30 +1,27 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { FileLoader, AudioSource, AudioFileInfo } from './file-loader';
-import { AudioFormat } from './index';
+import { FileLoader, AudioSource } from './file-loader';
+import * as path from 'path';
 
 /**
- * Unit tests for the FileLoader class
+ * Unit tests for audio file loading
  * Test type: Unit
  */
 describe('FileLoader', () => {
   let fileLoader: FileLoader;
-  let mockAudioContext: AudioContext;
   
   beforeEach(() => {
-    // Mock AudioContext and decodeAudioData
-    mockAudioContext = {
-      decodeAudioData: vi.fn().mockImplementation((arrayBuffer) => {
+    // Mock the AudioContext
+    global.AudioContext = vi.fn().mockImplementation(() => ({
+      decodeAudioData: vi.fn().mockImplementation((_) => {
         return Promise.resolve({
           duration: 30,
-          length: 10000,
           numberOfChannels: 2,
-          sampleRate: 44100,
-          getChannelData: vi.fn()
+          sampleRate: 44100
         });
       })
-    } as unknown as AudioContext;
+    })) as any;
     
-    fileLoader = new FileLoader({ context: mockAudioContext });
+    fileLoader = new FileLoader();
   });
   
   afterEach(() => {
@@ -44,7 +41,7 @@ describe('FileLoader', () => {
       
       // Verify result
       expect((fileLoader as any).readFileAsArrayBuffer).toHaveBeenCalledWith(mockFile);
-      expect(mockAudioContext.decodeAudioData).toHaveBeenCalled();
+      expect(global.AudioContext.decodeAudioData).toHaveBeenCalled();
       expect(result.buffer).toBeDefined();
       expect(result.info.name).toBe('test.mp3');
       expect(result.info.format).toBe(AudioFormat.MP3);
@@ -76,7 +73,7 @@ describe('FileLoader', () => {
       
       // Verify result
       expect(global.fetch).toHaveBeenCalledWith('https://example.com/test.mp3');
-      expect(mockAudioContext.decodeAudioData).toHaveBeenCalled();
+      expect(global.AudioContext.decodeAudioData).toHaveBeenCalled();
       expect(result.buffer).toBeDefined();
       expect(result.info.name).toBe('test.mp3');
       expect(result.info.format).toBe(AudioFormat.MP3);
@@ -123,7 +120,7 @@ describe('FileLoader', () => {
       const result = await fileLoader.loadFromArrayBuffer(mockArrayBuffer, 'test.mp3', AudioFormat.MP3);
       
       // Verify result
-      expect(mockAudioContext.decodeAudioData).toHaveBeenCalledWith(mockArrayBuffer);
+      expect(global.AudioContext.decodeAudioData).toHaveBeenCalledWith(mockArrayBuffer);
       expect(result.buffer).toBeDefined();
       expect(result.info.name).toBe('test.mp3');
       expect(result.info.format).toBe(AudioFormat.MP3);

@@ -1,72 +1,31 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { Transcriber, TranscriptionElement } from './transcriber';
+import { Transcriber, TranscriptionElement, TranscriptionOptions } from './transcriber';
 import { AudioEngine } from './index';
 
 /**
- * Unit tests for the Transcriber class
+ * Unit tests for the Transcriber
  * Test type: Unit
  */
 describe('Transcriber', () => {
   let transcriber: Transcriber;
   let mockAudioEngine: AudioEngine;
-  let mockAnalyzer: AnalyserNode;
-  let mockAudioBuffer: AudioBuffer;
   
   beforeEach(() => {
-    // Create mock AudioBuffer
-    mockAudioBuffer = {
-      duration: 30,
-      length: 10000,
-      numberOfChannels: 2,
-      sampleRate: 44100,
-      getChannelData: vi.fn().mockReturnValue(new Float32Array(1000))
-    } as unknown as AudioBuffer;
-    
-    // Create mock AudioEngine
+    // Create a mock audio engine with the necessary methods
     mockAudioEngine = {
-      getAudioInfo: vi.fn().mockReturnValue({
-        name: 'test.mp3',
-        format: 'mp3',
-        size: 1024,
-        duration: 30,
-        source: 'file'
-      }),
-      
-      // Mock other methods as needed
-      initialize: vi.fn(),
       loadSound: vi.fn(),
       playSound: vi.fn(),
-      stopSound: vi.fn()
+      getCurrentTime: vi.fn(() => 0),
+      // Mock for accessing private property in transcriber
+      soundBuffers: new Map()
     } as unknown as AudioEngine;
     
-    // Mock AudioEngine internals (private properties we access)
-    (mockAudioEngine as any).context = {
-      createAnalyser: vi.fn().mockReturnValue({
-        fftSize: 2048,
-        getByteFrequencyData: vi.fn(),
-        getByteTimeDomainData: vi.fn(),
-        connect: vi.fn()
-      }),
-      currentTime: 0
-    };
-    (mockAudioEngine as any).soundBuffers = new Map();
-    (mockAudioEngine as any).soundBuffers.set('test-track', mockAudioBuffer);
-    
-    // Create mock AnalyserNode
-    mockAnalyzer = {
-      fftSize: 2048,
-      getByteFrequencyData: vi.fn(),
-      getByteTimeDomainData: vi.fn(),
-      connect: vi.fn()
-    } as unknown as AnalyserNode;
-    
-    // Create Transcriber instance
+    // Create a transcriber with the mock engine
     transcriber = new Transcriber(mockAudioEngine);
   });
   
   afterEach(() => {
-    vi.restoreAllMocks();
-    transcriber.dispose();
+    vi.clearAllMocks();
   });
   
   it('should create a Transcriber instance', () => {

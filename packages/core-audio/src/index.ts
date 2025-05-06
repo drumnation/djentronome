@@ -1,8 +1,24 @@
 /**
+ * Core Audio Package
+ * 
+ * Provides audio engine, synchronization, and analysis functionality.
+ */
+
+/**
  * Core Audio Engine for Djentronome
  */
 import { FileLoader, AudioFileInfo, AudioSource } from './file-loader';
 import { Transcriber, TranscriptionElement, TranscriptionResult, TranscriptionOptions } from './transcriber';
+
+// Audio engine components
+export * from './game-sync';
+export * from './audio-game-integration';
+export * from './buffer-manager';
+export * from './bpm-utils';
+export * from './audio-analysis';
+
+// Re-export audio analysis submodules for direct access
+export * from './audio-analysis/index';
 
 /**
  * Audio file formats supported
@@ -177,28 +193,46 @@ export interface AudioInstance {
 }
 
 /**
- * Core audio engine for managing game audio
+ * Audio Engine class for audio playback and management
  */
 export class AudioEngine {
   private context: AudioContext | null = null;
   private masterGainNode: GainNode | null = null;
   private soundBuffers: Map<string, AudioBuffer> = new Map();
+  private soundInfos: Map<string, AudioFileInfo> = new Map();
   private activeSounds: Map<string, AudioInstance> = new Map();
   private fileLoader: FileLoader | null = null;
+  private bufferManager: BufferManager;
   private localAudio: Map<string, LocalAudio> = new Map();
+  private eventListeners: Map<AudioEventType, Set<AudioEventListener>> = new Map();
+  private options: AudioEngineOptions;
   private masterVolume: number;
   private enabled: boolean;
-  private preloadSounds: boolean;
-  private eventListeners: Map<AudioEventType, Set<AudioEventListener>> = new Map();
   private syncChecker: number | null = null;
 
   /**
    * Create a new audio engine
    */
   constructor(options: AudioEngineOptions = {}) {
+    this.options = { ...DEFAULT_OPTIONS, ...options };
+    this.context = new AudioContext();
+    this.masterGain = this.context.createGain();
+    this.masterGain.gain.value = this.options.gain || 1.0;
+    this.masterGain.connect(this.context.destination);
+    
+    // Initialize file loader
+    this.fileLoader = new FileLoader({
+      context: this.context
+    });
+    
+    // Initialize buffer manager
+    this.bufferManager = new BufferManager({
+      maxMemoryMB: this.options.maxMemoryMB || 100,
+      streamThresholdMB: this.options.streamThresholdMB || 10
+    });
+
     this.masterVolume = options.masterVolume ?? 1.0;
     this.enabled = options.enabled ?? true;
-    this.preloadSounds = options.preloadSounds ?? false;
   }
 
   /**

@@ -291,7 +291,7 @@ export class Transcriber {
    * Detect transients and categorize them
    */
   private detectTransients(
-    audioBuffer: AudioBuffer,
+    _: AudioBuffer,
     result: TranscriptionResult,
     options: TranscriptionOptions
   ): void {

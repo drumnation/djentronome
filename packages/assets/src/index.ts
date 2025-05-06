@@ -17,7 +17,7 @@ const assetLoadingStatus = new Map<string, AssetLoadingInfo>();
 export function loadSound(asset: SoundAsset): Promise<boolean> {
   updateAssetStatus(asset.id, AssetStatus.LOADING, 0);
   
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     // Simulated loading - to be replaced with actual loading logic
     setTimeout(() => {
       updateAssetStatus(asset.id, AssetStatus.LOADED, 1);
@@ -34,7 +34,7 @@ export function loadSound(asset: SoundAsset): Promise<boolean> {
 export function loadSprite(asset: SpriteAsset): Promise<boolean> {
   updateAssetStatus(asset.id, AssetStatus.LOADING, 0);
   
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     // Simulated loading - to be replaced with actual loading logic
     setTimeout(() => {
       updateAssetStatus(asset.id, AssetStatus.LOADED, 1);

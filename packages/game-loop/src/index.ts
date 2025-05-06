@@ -18,8 +18,6 @@ export type GameLoopOptions = {
 };
 
 export class GameLoop {
-  private fps: number;
-  private frameTime: number;
   private lastFrameTime: number = 0;
   private running: boolean = false;
   private animationFrameId: number | null = null;
@@ -27,8 +25,8 @@ export class GameLoop {
   private render?: (deltaTime: number) => void;
 
   constructor(options: GameLoopOptions) {
-    this.fps = options.fps || 60;
-    this.frameTime = 1000 / this.fps;
+    // Store fps in a local variable for future use if needed
+    options.fps = options.fps || 60;
     this.update = options.update;
     this.render = options.render;
   }

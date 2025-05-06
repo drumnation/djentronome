@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { createGameStateMock, createInputHandlerMock, createRendererMock } from './index';
 
 describe('Test Utilities Mocks', () => {
