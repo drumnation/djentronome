@@ -163,7 +163,7 @@
 ### 5.2. Agent 2: Agent Spock (Core Systems & MIDI)
 
 *   `[ ]` F1: Monorepo & Tooling Setup
-*   `[ ]` F2: Core Packages Scaffolding
+*   `[X]` F2: Core Packages Scaffolding
 *   `[ ]` F4: Web MIDI Integration (Alesis Nitro Kick/Snare)
 *   `[ ]` F5: Static Pattern Loader & Format
 *   `[ ]` F6: Basic Game Loop
