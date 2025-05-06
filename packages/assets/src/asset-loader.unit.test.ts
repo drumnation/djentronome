@@ -10,22 +10,22 @@ describe('Asset Loader', () => {
   });
   
   it('should load a sound asset and update its status', async () => {
-    const result = await loadSound(soundAssets.buttonClick);
+    const result = await loadSound(soundAssets.buttonClick!);
     
     expect(result).toBe(true);
     
-    const status = getAssetStatus(soundAssets.buttonClick.id);
+    const status = getAssetStatus(soundAssets.buttonClick!.id);
     expect(status).toBeDefined();
     expect(status?.status).toBe(AssetStatus.LOADED);
     expect(status?.progress).toBe(1);
   });
   
   it('should load a sprite asset and update its status', async () => {
-    const result = await loadSprite(spriteAssets.playerIdle);
+    const result = await loadSprite(spriteAssets.playerIdle!);
     
     expect(result).toBe(true);
     
-    const status = getAssetStatus(spriteAssets.playerIdle.id);
+    const status = getAssetStatus(spriteAssets.playerIdle!.id);
     expect(status).toBeDefined();
     expect(status?.status).toBe(AssetStatus.LOADED);
     expect(status?.progress).toBe(1);

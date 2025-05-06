@@ -1,6 +1,6 @@
 {
-	"name": "djentronome",
-	"version": "0.1.0",
+	"name": "@djentronome/core-audio",
+	"version": "0.2.0",
 	"packageManager": "pnpm@9.0.0",
 	"scripts": {
 		"download-track": "tsx scripts/download-djent-track.ts",
@@ -22,5 +22,6 @@
 		"turbo": "^2.5.2",
 		"typescript": "^5.8.3",
 		"youtube-dl-exec": "^3.0.20"
-	}
+	},
+	"main": "./src/index.ts"
 }

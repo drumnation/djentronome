@@ -1,17 +1,9 @@
-import { Component, ComponentType, EntityId } from './types';
+import { Component, ComponentType, EntityId, ComponentConstructor } from './types';
 
 /**
  * Registry of all registered component types
  */
 const componentRegistry: Map<ComponentType, ComponentConstructor<any>> = new Map();
-
-/**
- * Base component constructor interface
- */
-export interface ComponentConstructor<T extends Component> {
-  type: ComponentType;
-  new (entityId: EntityId, ...args: any[]): T;
-}
 
 /**
  * Register a component type in the registry

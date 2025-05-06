@@ -1,6 +1,7 @@
-# Project Documentation
+# Documentation Index
 
-This is the central index for all project documentation.
+Welcome to the Djentronome project documentation.
 
-## Features
-* [Features Index](./features/features.index.md): Documentation for all implemented features 
+## Sections
+
+* [Features Index](./features/features.index.md): Documentation for all implemented features

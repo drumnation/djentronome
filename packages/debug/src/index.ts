@@ -3,14 +3,13 @@
  * 
  * This package provides debugging tools for the Djentronome project.
  */
-import { DebugOptions, MetricData, StateData } from './types';
+import { DebugOptions, StateData } from './types';
 
 /**
  * DebugOverlay class for displaying debug information
  */
 export class DebugOverlay {
   private metrics: Map<string, any> = new Map();
-  private visible: boolean = false;
   
   /**
    * Create a new debug overlay with options
@@ -23,7 +22,6 @@ export class DebugOverlay {
    * Show the debug overlay
    */
   show(): void {
-    this.visible = true;
     console.log('Debug overlay shown');
   }
   
@@ -31,7 +29,6 @@ export class DebugOverlay {
    * Hide the debug overlay
    */
   hide(): void {
-    this.visible = false;
     console.log('Debug overlay hidden');
   }
   
