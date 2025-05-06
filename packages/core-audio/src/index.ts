@@ -68,6 +68,73 @@ export interface LocalAudio {
 }
 
 /**
+ * Audio event types
+ */
+export enum AudioEventType {
+  LOAD = 'load',
+  PLAY = 'play',
+  PAUSE = 'pause',
+  RESUME = 'resume',
+  STOP = 'stop',
+  END = 'end',
+  SYNC = 'sync',
+  ERROR = 'error'
+}
+
+/**
+ * Audio event listener function
+ */
+export type AudioEventListener = (event: AudioEvent) => void;
+
+/**
+ * Audio event object
+ */
+export interface AudioEvent {
+  /**
+   * Type of event
+   */
+  type: AudioEventType;
+  /**
+   * ID of the audio instance
+   */
+  instanceId?: string;
+  /**
+   * ID of the sound
+   */
+  soundId?: string;
+  /**
+   * Time of the event in context time
+   */
+  time: number;
+  /**
+   * Additional data for the event
+   */
+  data?: any;
+}
+
+/**
+ * Sync point for audio events
+ */
+export interface SyncPoint {
+  /**
+   * Time in seconds when this sync point should trigger
+   */
+  time: number;
+  /**
+   * ID for the sync point
+   */
+  id: string;
+  /**
+   * Whether this sync point has been triggered
+   */
+  triggered: boolean;
+  /**
+   * Optional data to include with the sync event
+   */
+  data?: any;
+}
+
+/**
  * Audio playback instance
  */
 export interface AudioInstance {
@@ -103,6 +170,10 @@ export interface AudioInstance {
    * Offset in seconds for resuming from pause
    */
   pauseTime?: number;
+  /**
+   * Sync points for this instance
+   */
+  syncPoints?: SyncPoint[];
 }
 
 /**
@@ -118,6 +189,8 @@ export class AudioEngine {
   private masterVolume: number;
   private enabled: boolean;
   private preloadSounds: boolean;
+  private eventListeners: Map<AudioEventType, Set<AudioEventListener>> = new Map();
+  private syncChecker: number | null = null;
 
   /**
    * Create a new audio engine
@@ -142,9 +215,25 @@ export class AudioEngine {
       
       // Initialize file loader
       this.fileLoader = new FileLoader({ context: this.context });
+      
+      // Start the sync point checker
+      this.startSyncChecker();
+      
+      // Dispatch initialization event
+      this.dispatchEvent({
+        type: AudioEventType.LOAD,
+        time: this.getCurrentTime()
+      });
     } catch (error) {
       console.error('Failed to initialize AudioEngine:', error);
       this.enabled = false;
+      
+      // Dispatch error event
+      this.dispatchEvent({
+        type: AudioEventType.ERROR,
+        time: this.getCurrentTime(),
+        data: { error }
+      });
     }
   }
 
@@ -251,93 +340,131 @@ export class AudioEngine {
   }
 
   /**
-   * Play a loaded sound
+   * Play a sound
    */
   public playSound(id: string, options: Partial<SoundConfig> = {}): string | null {
     if (!this.enabled || !this.context || !this.masterGainNode) return null;
-
-    const soundBuffer = this.soundBuffers.get(id);
-    if (!soundBuffer) {
-      console.warn(`Sound ${id} not found`);
+    
+    // Get sound buffer
+    const buffer = this.soundBuffers.get(id);
+    if (!buffer) {
+      console.error(`Sound not loaded: ${id}`);
       return null;
     }
-
-    // Generate a unique instance ID for this playback
-    const instanceId = `${id}_${Date.now()}`;
     
-    // Create source node
-    const source = this.context.createBufferSource();
-    source.buffer = soundBuffer;
-    
-    // Set loop if specified
-    source.loop = options.loop ?? false;
-    
-    // Set playback rate if specified
-    if (options.playbackRate !== undefined) {
-      source.playbackRate.value = options.playbackRate;
-    }
-    
-    // Create gain node for this sound
-    const gainNode = this.context.createGain();
-    gainNode.gain.value = options.volume ?? 1.0;
-    
-    // Connect nodes
-    source.connect(gainNode);
-    gainNode.connect(this.masterGainNode);
-    
-    // Start playback
-    const startTime = this.context.currentTime;
-    source.start(startTime);
-    
-    // Create audio instance
-    const instance: AudioInstance = {
-      id: instanceId,
-      source,
-      gainNode,
-      startTime,
-      duration: soundBuffer.duration,
-      state: 'playing',
-      soundId: id
-    };
-    
-    // Store the instance
-    this.activeSounds.set(instanceId, instance);
-    
-    // Add ended listener to clean up
-    source.onended = () => {
-      // Only handle if not already stopped or paused
-      if (this.activeSounds.has(instanceId)) {
-        const sound = this.activeSounds.get(instanceId)!;
-        if (sound.state === 'playing') {
-          sound.state = 'stopped';
-          this.activeSounds.delete(instanceId);
-        }
+    try {
+      // Create source node
+      const source = this.context.createBufferSource();
+      source.buffer = buffer;
+      
+      // Set loop option
+      source.loop = options.loop ?? false;
+      
+      // Set playback rate
+      if (options.playbackRate !== undefined) {
+        source.playbackRate.value = options.playbackRate;
       }
-    };
-    
-    return instanceId;
+      
+      // Create gain node for this instance
+      const gainNode = this.context.createGain();
+      
+      // Set volume
+      const volume = options.volume ?? 1.0;
+      gainNode.gain.value = volume;
+      
+      // Connect nodes: source -> gain -> master -> destination
+      source.connect(gainNode);
+      gainNode.connect(this.masterGainNode);
+      
+      // Generate unique ID for this instance
+      const instanceId = `${id}_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+      
+      // Store instance
+      const instance: AudioInstance = {
+        id: instanceId,
+        source,
+        gainNode,
+        startTime: this.context.currentTime,
+        duration: buffer.duration,
+        state: 'playing',
+        soundId: id
+      };
+      
+      this.activeSounds.set(instanceId, instance);
+      
+      // Start playback
+      source.start();
+      
+      // Set up ended callback
+      source.onended = () => {
+        if (this.activeSounds.has(instanceId)) {
+          this.activeSounds.delete(instanceId);
+          
+          // Dispatch end event
+          this.dispatchEvent({
+            type: AudioEventType.END,
+            instanceId,
+            soundId: id,
+            time: this.getCurrentTime()
+          });
+        }
+      };
+      
+      // Dispatch play event
+      this.dispatchEvent({
+        type: AudioEventType.PLAY,
+        instanceId,
+        soundId: id,
+        time: this.context.currentTime,
+        data: { duration: buffer.duration }
+      });
+      
+      return instanceId;
+    } catch (error) {
+      console.error(`Failed to play sound ${id}:`, error);
+      
+      // Dispatch error event
+      this.dispatchEvent({
+        type: AudioEventType.ERROR,
+        soundId: id,
+        time: this.getCurrentTime(),
+        data: { error }
+      });
+      
+      return null;
+    }
   }
-
+  
   /**
-   * Pause a playing sound
+   * Pause sound playback
    */
   public pauseSound(instanceId: string): boolean {
     if (!this.enabled || !this.context) return false;
-
+    
     const instance = this.activeSounds.get(instanceId);
-    if (!instance || instance.state !== 'playing') return false;
-
+    if (!instance || instance.state !== 'playing') {
+      return false;
+    }
+    
     try {
-      // Calculate current playback position
-      const elapsed = this.context.currentTime - instance.startTime;
-      const pauseTime = Math.min(elapsed, instance.duration);
+      // Calculate current position
+      const currentTime = this.context.currentTime;
+      instance.pauseTime = currentTime - instance.startTime;
       
-      // Stop the current source node
+      // Stop the source (cannot be restarted, will create a new one on resume)
       instance.source.stop();
       
-      // Update instance state
+      // Update state
       instance.state = 'paused';
-      instance.pauseTime = pauseTime;
+      
+      // Dispatch pause event
+      this.dispatchEvent({
+        type: AudioEventType.PAUSE,
+        instanceId,
+        soundId: instance.soundId,
+        time: currentTime,
+        data: { pauseTime: instance.pauseTime }
+      });
       
       return true;
     } catch (error) {
@@ -347,49 +474,63 @@ export class AudioEngine {
   }
   
   /**
-   * Resume a paused sound
+   * Resume sound playback
    */
   public resumeSound(instanceId: string): boolean {
     if (!this.enabled || !this.context || !this.masterGainNode) return false;
-
+    
     const instance = this.activeSounds.get(instanceId);
-    if (!instance || instance.state !== 'paused' || instance.pauseTime === undefined) return false;
-
+    if (!instance || instance.state !== 'paused' || instance.pauseTime === undefined) {
+      return false;
+    }
+    
     try {
-      // Get the sound buffer
-      const soundBuffer = this.soundBuffers.get(instance.soundId);
-      if (!soundBuffer) return false;
+      // Get the buffer
+      const buffer = this.soundBuffers.get(instance.soundId);
+      if (!buffer) {
+        return false;
+      }
       
-      // Create new source node
+      // Create a new source node
       const source = this.context.createBufferSource();
-      source.buffer = soundBuffer;
+      source.buffer = buffer;
       source.loop = instance.source.loop;
       source.playbackRate.value = instance.source.playbackRate.value;
       
-      // Connect to the existing gain node
+      // Connect to gain node
       source.connect(instance.gainNode);
       
-      // Start playback from the pause position
-      const startTime = this.context.currentTime;
-      source.start(startTime, instance.pauseTime);
-      
-      // Update instance with new source and times
+      // Update instance
       instance.source = source;
-      instance.startTime = startTime - instance.pauseTime;
+      instance.startTime = this.context.currentTime - instance.pauseTime;
       instance.state = 'playing';
-      instance.pauseTime = undefined;
       
-      // Add ended listener to clean up
+      // Start playback from pause position
+      source.start(0, instance.pauseTime);
+      
+      // Setup ended callback
       source.onended = () => {
-        // Only handle if not already stopped or paused
         if (this.activeSounds.has(instanceId)) {
-          const sound = this.activeSounds.get(instanceId)!;
-          if (sound.state === 'playing') {
-            sound.state = 'stopped';
-            this.activeSounds.delete(instanceId);
-          }
+          this.activeSounds.delete(instanceId);
+          
+          // Dispatch end event
+          this.dispatchEvent({
+            type: AudioEventType.END,
+            instanceId,
+            soundId: instance.soundId,
+            time: this.getCurrentTime()
+          });
         }
       };
+      
+      // Dispatch resume event
+      this.dispatchEvent({
+        type: AudioEventType.RESUME,
+        instanceId,
+        soundId: instance.soundId,
+        time: this.context.currentTime,
+        data: { resumeTime: instance.pauseTime }
+      });
       
       return true;
     } catch (error) {
@@ -397,23 +538,34 @@ export class AudioEngine {
       return false;
     }
   }
-
+  
   /**
-   * Stop a playing sound
+   * Stop sound playback
    */
   public stopSound(instanceId: string): boolean {
     if (!this.enabled) return false;
-
+    
     const instance = this.activeSounds.get(instanceId);
-    if (!instance) return false;
-
+    if (!instance) {
+      return false;
+    }
+    
     try {
       if (instance.state === 'playing') {
         instance.source.stop();
       }
       
-      instance.state = 'stopped';
+      // Clean up
       this.activeSounds.delete(instanceId);
+      
+      // Dispatch stop event
+      this.dispatchEvent({
+        type: AudioEventType.STOP,
+        instanceId,
+        soundId: instance.soundId,
+        time: this.getCurrentTime()
+      });
+      
       return true;
     } catch (error) {
       console.error(`Failed to stop sound ${instanceId}:`, error);
@@ -484,27 +636,184 @@ export class AudioEngine {
   }
 
   /**
-   * Cleanup resources
+   * Play a sound with sync points
+   */
+  public playSoundWithSync(
+    id: string, 
+    options: Partial<SoundConfig> = {},
+    syncPoints: SyncPoint[] = []
+  ): string | null {
+    const instanceId = this.playSound(id, options);
+    
+    if (instanceId) {
+      // Add sync points to the instance
+      const instance = this.activeSounds.get(instanceId);
+      if (instance) {
+        instance.syncPoints = syncPoints.map(sp => ({ ...sp, triggered: false }));
+      }
+    }
+    
+    return instanceId;
+  }
+  
+  /**
+   * Add a sync point to an active sound
+   */
+  public addSyncPoint(instanceId: string, syncPoint: SyncPoint): boolean {
+    const instance = this.activeSounds.get(instanceId);
+    if (!instance) {
+      return false;
+    }
+    
+    // Initialize syncPoints array if it doesn't exist
+    if (!instance.syncPoints) {
+      instance.syncPoints = [];
+    }
+    
+    // Add the sync point
+    instance.syncPoints.push({ ...syncPoint, triggered: false });
+    return true;
+  }
+  
+  /**
+   * Add an event listener
+   */
+  public addEventListener(type: AudioEventType, listener: AudioEventListener): void {
+    if (!this.eventListeners.has(type)) {
+      this.eventListeners.set(type, new Set());
+    }
+    
+    this.eventListeners.get(type)?.add(listener);
+  }
+  
+  /**
+   * Remove an event listener
+   */
+  public removeEventListener(type: AudioEventType, listener: AudioEventListener): void {
+    const listeners = this.eventListeners.get(type);
+    if (listeners) {
+      listeners.delete(listener);
+    }
+  }
+  
+  /**
+   * Dispatch an event
+   */
+  private dispatchEvent(event: AudioEvent): void {
+    const listeners = this.eventListeners.get(event.type);
+    if (listeners) {
+      for (const listener of listeners) {
+        listener(event);
+      }
+    }
+  }
+  
+  /**
+   * Start the sync point checker
+   */
+  private startSyncChecker(): void {
+    if (this.syncChecker !== null) {
+      return;
+    }
+    
+    const checkSyncPoints = () => {
+      if (!this.context) return;
+      
+      const currentTime = this.getCurrentTime();
+      
+      // Check all active sounds for sync points
+      for (const [instanceId, instance] of this.activeSounds.entries()) {
+        if (!instance.syncPoints) continue;
+        
+        // Calculate playback position
+        const elapsedTime = currentTime - instance.startTime;
+        
+        // Check each sync point
+        for (const syncPoint of instance.syncPoints) {
+          if (!syncPoint.triggered && elapsedTime >= syncPoint.time) {
+            // Mark as triggered
+            syncPoint.triggered = true;
+            
+            // Dispatch sync event
+            this.dispatchEvent({
+              type: AudioEventType.SYNC,
+              instanceId,
+              soundId: instance.soundId,
+              time: currentTime,
+              data: {
+                syncPoint,
+                elapsedTime
+              }
+            });
+          }
+        }
+      }
+      
+      // Schedule next check
+      this.scheduleSyncCheck(checkSyncPoints);
+    };
+    
+    // Start checking
+    this.scheduleSyncCheck(checkSyncPoints);
+  }
+  
+  /**
+   * Schedule the next sync check in a way that works in both browser and Node environments
+   */
+  private scheduleSyncCheck(callback: () => void): void {
+    // Check if we're in a browser environment
+    if (typeof window !== 'undefined' && window.requestAnimationFrame) {
+      this.syncChecker = window.requestAnimationFrame(callback);
+    } else {
+      // Fallback for Node.js or environments without requestAnimationFrame
+      this.syncChecker = setTimeout(callback, 16) as unknown as number; // ~60fps
+    }
+  }
+  
+  /**
+   * Stop the sync point checker
+   */
+  private stopSyncChecker(): void {
+    if (this.syncChecker !== null) {
+      if (typeof window !== 'undefined' && window.cancelAnimationFrame) {
+        window.cancelAnimationFrame(this.syncChecker);
+      } else {
+        // Fallback for Node.js
+        clearTimeout(this.syncChecker as unknown as NodeJS.Timeout);
+      }
+      this.syncChecker = null;
+    }
+  }
+
+  /**
+   * Dispose of the audio engine
    */
   public dispose(): void {
-    // Stop all active sounds
-    for (const instanceId of this.activeSounds.keys()) {
+    // Stop sync checker
+    this.stopSyncChecker();
+    
+    // Clear all event listeners
+    this.eventListeners.clear();
+    
+    // Dispose of audio resources
+    for (const [instanceId] of this.activeSounds) {
       this.stopSound(instanceId);
     }
     
-    // Clear collections
-    this.activeSounds.clear();
-    this.soundBuffers.clear();
-    this.localAudio.clear();
-    
-    // Close audio context
-    if (this.context && this.context.state !== 'closed') {
+    // Close the audio context
+    if (this.context) {
       this.context.close();
+      this.context = null;
     }
     
-    this.context = null;
-    this.masterGainNode = null;
+    // Clear maps
+    this.soundBuffers.clear();
+    this.activeSounds.clear();
+    this.localAudio.clear();
+    
+    // Null out references
     this.fileLoader = null;
+    this.masterGainNode = null;
   }
 }
 

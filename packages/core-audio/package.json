@@ -1,6 +1,6 @@
 {
   "name": "@djentronome/core-audio",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
@@ -32,4 +32,4 @@
     ]
   },
   "prettier": "@kit/prettier-config"
-} 
+}
