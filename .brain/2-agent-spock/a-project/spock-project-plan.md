@@ -2,13 +2,13 @@
 
 **Project:** Djentronome
 
-**Last Updated:** 2024-10-27
+**Last Updated:** 2025-05-05
 
 **Main Project Plan:** [Link to .brain/project-plan.md](../../project-plan.md)
 
 ## Assigned Features:
 
-*   `[ ]` F1: Monorepo & Tooling Setup
+*   `[X]` F1: Monorepo & Tooling Setup
 *   `[ ]` F2: Core Packages Scaffolding
 *   `[ ]` F4: Web MIDI Integration (Alesis Nitro Kick/Snare)
 *   `[ ]` F5: Static Pattern Loader & Format

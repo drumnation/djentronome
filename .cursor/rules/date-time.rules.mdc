@@ -1,7 +1,7 @@
 ---
-description: 
+description: Use whenever you need a current date. Example -- Last Updated: xxxxxxx 
 globs: 
-alwaysApply: true
+alwaysApply: false
 ---
 ## Date Command Usage:
 ```bash
