@@ -2,7 +2,10 @@ import {
   Pattern,
   PatternFile,
   PatternLoaderOptions,
+  ValidationResult
 } from './types';
+import { PatternCache } from './pattern-cache';
+import { PatternValidator } from './pattern-validator';
 
 /**
  * Default options for PatternLoader
@@ -10,35 +13,58 @@ import {
 const DEFAULT_OPTIONS: PatternLoaderOptions = {
   basePath: '',
   validate: false,
-  defaultVersion: '1.0'
+  defaultVersion: '1.0',
+  enableCache: false,
+  cacheSize: 10
 };
 
 /**
- * Result of pattern validation
- */
-interface ValidationResult {
-  valid: boolean;
-  errors: string[];
-}
-
-/**
  * Class for loading rhythm patterns from various sources
+ * 
+ * This class is part of a modular design where:
+ * - PatternLoader handles loading patterns from sources
+ * - PatternCache handles caching for performance
+ * - PatternValidator handles validation logic
+ * 
+ * Benefits of this separation:
+ * - Each class has a single responsibility (SRP)
+ * - Improved testability of each component
+ * - Better code organization and maintainability
+ * - Easier to extend with new features
  */
 export class PatternLoader {
   private options: PatternLoaderOptions;
+  private cache: PatternCache;
+  private validator: PatternValidator;
 
   /**
    * Create a new PatternLoader
+   * 
+   * @param options - Options for pattern loading
    */
   constructor(options: PatternLoaderOptions = DEFAULT_OPTIONS) {
     this.options = { ...DEFAULT_OPTIONS, ...options };
+    this.cache = new PatternCache(this.options.cacheSize);
+    this.validator = new PatternValidator();
   }
 
   /**
    * Load a pattern from a file path
+   * 
+   * @param path - Path to the pattern file
+   * @returns Promise resolving to the loaded pattern
+   * @throws Error if pattern loading fails or validation fails
    */
   async loadPattern(path: string): Promise<Pattern> {
     try {
+      // Check cache first if enabled
+      if (this.options.enableCache) {
+        const cachedPattern = this.cache.get(path);
+        if (cachedPattern) {
+          return cachedPattern;
+        }
+      }
+
       // Apply base path if provided
       const fullPath = this.options.basePath 
         ? `${this.options.basePath}/${path}`.replace(/\/+/g, '/') 
@@ -66,8 +92,15 @@ export class PatternLoader {
       if (this.options.validate) {
         const validation = this.validatePattern(pattern);
         if (!validation.valid) {
-          throw new Error(`Invalid pattern: ${validation.errors.join(', ')}`);
+          // For a more detailed error, include the first few validation errors
+          const errorDetails = validation.errors.slice(0, 3).join(', ');
+          throw new Error(`Invalid pattern: ${errorDetails}${validation.errors.length > 3 ? `, and ${validation.errors.length - 3} more errors` : ''}`);
         }
+      }
+      
+      // Add to cache if enabled
+      if (this.options.enableCache) {
+        this.cache.add(path, pattern);
       }
       
       return pattern;
@@ -86,6 +119,9 @@ export class PatternLoader {
 
   /**
    * Create a pattern object from raw data
+   * 
+   * @param data - Partial pattern data
+   * @returns Complete pattern object with defaults applied
    */
   createPattern(data: Partial<Pattern>): Pattern {
     // Apply default version if not provided
@@ -99,53 +135,37 @@ export class PatternLoader {
 
   /**
    * Validate a pattern object
+   * 
+   * @param pattern - The pattern to validate
+   * @returns ValidationResult with valid flag and any errors
    */
   validatePattern(pattern: Pattern): ValidationResult {
-    const errors: string[] = [];
-    
-    // Check required top-level fields
-    if (!pattern.id) errors.push('Missing required field "id"');
-    if (!pattern.version) errors.push('Missing required field "version"');
-    if (!pattern.duration) errors.push('Missing required field "duration"');
-    
-    // Check metadata
-    if (!pattern.metadata) {
-      errors.push('Missing required field "metadata"');
-    } else {
-      // Check required metadata fields
-      if (!pattern.metadata.title) errors.push('Missing required field "title" in metadata');
-      if (!pattern.metadata.difficulty) errors.push('Missing required field "difficulty" in metadata');
-      if (!pattern.metadata.bpm) errors.push('Missing required field "bpm" in metadata');
-      if (!pattern.metadata.timeSignature) errors.push('Missing required field "timeSignature" in metadata');
-    }
-    
-    // Check that at least one of notes or sections is provided
-    if (!pattern.notes && !pattern.sections) {
-      errors.push('Pattern must have either notes or sections');
-    }
-    
-    // If sections are provided, validate each section
-    if (pattern.sections && pattern.sections.length > 0) {
-      pattern.sections.forEach((section, index) => {
-        if (!section.id) errors.push(`Section ${index} is missing required field "id"`);
-        if (!section.name) errors.push(`Section ${index} is missing required field "name"`);
-        if (section.startTime === undefined) errors.push(`Section ${index} is missing required field "startTime"`);
-        if (section.endTime === undefined) errors.push(`Section ${index} is missing required field "endTime"`);
-        if (!section.notes) errors.push(`Section ${index} is missing required field "notes"`);
-      });
-    }
-    
-    // If notes are provided, validate each note
-    if (pattern.notes && pattern.notes.length > 0) {
-      pattern.notes.forEach((note, index) => {
-        if (note.time === undefined) errors.push(`Note ${index} is missing required field "time"`);
-        if (!note.type) errors.push(`Note ${index} is missing required field "type"`);
-      });
-    }
-    
-    return {
-      valid: errors.length === 0,
-      errors
-    };
+    return this.validator.validatePattern(pattern);
+  }
+
+  /**
+   * Clear the pattern cache
+   */
+  clearCache(): void {
+    this.cache.clear();
+  }
+
+  /**
+   * Remove a specific pattern from the cache
+   * 
+   * @param path - The pattern file path
+   * @returns true if the pattern was in the cache and was removed
+   */
+  removeFromCache(path: string): boolean {
+    return this.cache.remove(path);
+  }
+
+  /**
+   * Get number of patterns in cache
+   * 
+   * @returns The current number of cached patterns
+   */
+  getCacheSize(): number {
+    return this.cache.size();
   }
 } 

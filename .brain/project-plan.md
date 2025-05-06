@@ -2,7 +2,7 @@
 
 ## Status: ⭕ Planning
 
-## Last Updated: 2024-11-03
+## Last Updated: Monday, May 05, 2025 at 10:52:40 PM
 
 ## 1. Project Overview
 
@@ -165,7 +165,7 @@
 *   `[ ]` F1: Monorepo & Tooling Setup
 *   `[X]` F2: Core Packages Scaffolding
 *   `[X]` F4: Web MIDI Integration (Alesis Nitro Kick/Snare)
-*   `[ ]` F5: Static Pattern Loader & Format
+*   `[X]` F5: Static Pattern Loader & Format
 *   `[ ]` F6: Basic Game Loop
 *   `[ ]` F8: Hit Detection & Basic Scoring
 *   `[ ]` F12: Latency Calibration Tool (Logic Aspects)

@@ -8,14 +8,22 @@
 
 // Export PatternLoader
 export { PatternLoader } from './pattern-loader';
+export { PatternCache } from './pattern-cache';
+export { PatternValidator } from './pattern-validator';
+
+// Export PatternUtils
+export { PatternUtils } from './pattern-utils';
 
 // Export types
-export {
+export type {
   Pattern,
   PatternFile,
   PatternSection,
   PatternMetadata,
   Note,
   DifficultyLevel,
-  PatternLoaderOptions
+  PatternLoaderOptions,
+  ValidationResult,
+  ValidationError,
+  ValidationErrorType
 } from './types'; 

@@ -14,6 +14,58 @@ export enum DifficultyLevel {
 }
 
 /**
+ * Validation error types for more specific error handling
+ */
+export enum ValidationErrorType {
+  MISSING_FIELD = 'missing_field',
+  INVALID_VALUE = 'invalid_value',
+  STRUCTURAL_ERROR = 'structural_error',
+  FORMAT_ERROR = 'format_error'
+}
+
+/**
+ * Pattern loader specific validation error
+ */
+export class ValidationError extends Error {
+  public type: ValidationErrorType;
+  public field?: string;
+  public details?: string;
+
+  constructor(
+    message: string, 
+    type: ValidationErrorType, 
+    field?: string, 
+    details?: string
+  ) {
+    super(message);
+    this.name = 'ValidationError';
+    this.type = type;
+    this.field = field;
+    this.details = details;
+  }
+}
+
+/**
+ * Result of pattern validation
+ */
+export interface ValidationResult {
+  /**
+   * Whether the pattern is valid
+   */
+  valid: boolean;
+  
+  /**
+   * Error messages if invalid
+   */
+  errors: string[];
+  
+  /**
+   * Detailed validation errors
+   */
+  detailedErrors?: ValidationError[];
+}
+
+/**
  * Represents a single note in a pattern
  */
 export interface Note {
@@ -191,4 +243,14 @@ export interface PatternLoaderOptions {
    * Default version to use for patterns without a version
    */
   defaultVersion?: string;
+  
+  /**
+   * Whether to enable cache for loaded patterns
+   */
+  enableCache?: boolean;
+  
+  /**
+   * Maximum size of the pattern cache
+   */
+  cacheSize?: number;
 } 

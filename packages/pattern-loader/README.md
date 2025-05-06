@@ -1,69 +1,112 @@
-# Pattern Loader Package
+# Pattern Loader
 
-A package for loading, parsing, and managing rhythm patterns for the Djentronome rhythm game.
+A module for loading and validating rhythm patterns in the Djentronome application.
 
-## Features
+## Overview
 
-- Load patterns from JSON files
-- Validate pattern structure
-- Support for sectioned patterns (intro, verse, chorus, etc.)
-- Support for metadata (title, artist, BPM, etc.)
-- Type-safe pattern handling
+The Pattern Loader provides functionality to:
+
+- Load pattern files from various sources
+- Validate patterns against a schema
+- Cache patterns for improved performance
+- Create patterns from raw data
+
+## Modular Design
+
+This module follows a modular design with separation of concerns:
+
+```
+┌───────────────────┐     ┌───────────────────┐
+│                   │     │                   │
+│   PatternLoader   │────▶│   PatternCache    │
+│                   │     │                   │
+└─────────┬─────────┘     └───────────────────┘
+          │
+          │
+          ▼
+┌───────────────────┐     ┌───────────────────┐
+│                   │     │                   │
+│  PatternValidator │◀────│    /types         │
+│                   │     │                   │
+└───────────────────┘     └───────────────────┘
+```
+
+### Components
+
+1. **PatternLoader**: Main entry point that handles loading patterns from sources
+   - Coordinates between cache and validator
+   - Handles HTTP requests and error handling
+   - Manages pattern creation from raw data
+
+2. **PatternCache**: Handles caching of loaded patterns
+   - Implements LRU-like cache with configurable size
+   - Provides add/get/remove/clear operations
+   - Improves performance by avoiding repeated loading
+
+3. **PatternValidator**: Validates pattern structure and data
+   - Ensures required fields are present
+   - Validates values against constraints
+   - Detects structural issues like section overlaps
+   - Provides detailed error information
+
+4. **Types**: Shared type definitions for patterns
+   - Pattern structure and metadata
+   - Validation types
+   - Common enums like DifficultyLevel
 
 ## Usage
 
 ```typescript
-import { PatternLoader, Pattern, DifficultyLevel } from '@djentronome/pattern-loader';
+import { PatternLoader } from '@djentronome/pattern-loader';
 
-// Create a loader
-const patternLoader = new PatternLoader({
+// Create a loader with options
+const loader = new PatternLoader({
   basePath: '/assets/patterns',
-  validate: true
+  validate: true,
+  enableCache: true,
+  cacheSize: 20
 });
 
-// Load a pattern from a file
-async function loadGamePattern() {
-  try {
-    const pattern = await patternLoader.loadPattern('basic-rock-beat.json');
-    console.log(`Loaded pattern: ${pattern.metadata.title}`);
-    console.log(`Duration: ${pattern.duration}ms, BPM: ${pattern.metadata.bpm}`);
-    console.log(`Total notes: ${pattern.notes?.length || 0}`);
-    return pattern;
-  } catch (error) {
-    console.error('Failed to load pattern:', error);
-    throw error;
-  }
-}
+// Load a pattern
+const pattern = await loader.loadPattern('my-pattern.json');
 
-// Create a pattern programmatically
-function createSimplePattern(): Pattern {
-  return patternLoader.createPattern({
-    id: 'simple-beat',
-    metadata: {
-      title: 'Simple Beat',
-      difficulty: DifficultyLevel.BEGINNER,
-      bpm: 90,
-      timeSignature: '4/4'
-    },
-    duration: 4000, // 4 seconds
-    notes: [
-      { time: 0, type: 'kick', midiNote: 36 },
-      { time: 1000, type: 'snare', midiNote: 38 },
-      { time: 2000, type: 'kick', midiNote: 36 },
-      { time: 3000, type: 'snare', midiNote: 38 }
-    ]
-  });
-}
+// Create a pattern from data
+const customPattern = loader.createPattern({
+  id: 'custom-pattern',
+  metadata: {
+    title: 'My Custom Pattern',
+    difficulty: 'medium',
+    bpm: 120,
+    timeSignature: '4/4'
+  },
+  // ... other properties
+});
 
 // Validate a pattern
-function validateUserPattern(userPattern: Pattern) {
-  const validation = patternLoader.validatePattern(userPattern);
-  if (!validation.valid) {
-    console.error('Invalid pattern:', validation.errors);
-    return false;
-  }
-  return true;
+const validationResult = loader.validatePattern(customPattern);
+if (!validationResult.valid) {
+  console.error('Validation errors:', validationResult.errors);
 }
+```
+
+## Benefits of Modular Design
+
+- **Separation of Concerns**: Each class has a single responsibility
+- **Improved Testability**: Each component can be tested in isolation
+- **Better Maintainability**: Clear boundaries between different concerns
+- **Extensibility**: Easy to add new features to specific components
+- **Reusability**: Components can be used independently
+
+## Testing
+
+This package uses Vitest for unit and integration testing:
+
+```bash
+# Run all tests
+pnpm test
+
+# Run with coverage
+pnpm test:coverage
 ```
 
 ## Pattern File Format

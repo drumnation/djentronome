@@ -98,9 +98,10 @@ describe('PatternLoader', () => {
   });
   
   it('should validate patterns when validate option is true', async () => {
-    // Create an invalid pattern (missing required fields)
-    const invalidPattern = { ...samplePattern };
-    delete invalidPattern.metadata.title;
+    // Create an invalid pattern with a type assertion to bypass type checking for testing
+    const invalidPattern = JSON.parse(JSON.stringify(samplePattern)) as Pattern;
+    // @ts-ignore - Intentionally creating an invalid pattern for testing
+    invalidPattern.metadata.title = undefined;
     
     // Mock fetch response
     (global.fetch as any).mockResolvedValueOnce({
@@ -123,7 +124,15 @@ describe('PatternLoader', () => {
   
   it('should validate a valid pattern', () => {
     const loader = new PatternLoader();
-    const result = loader.validatePattern(samplePattern);
+    // Ensure the title field is explicitly set
+    const validPattern = {
+      ...samplePattern,
+      metadata: {
+        ...samplePattern.metadata,
+        title: 'Test Pattern' // Explicitly add title to ensure it's present
+      }
+    };
+    const result = loader.validatePattern(validPattern);
     
     expect(result.valid).toBe(true);
     expect(result.errors).toEqual([]);
@@ -132,11 +141,12 @@ describe('PatternLoader', () => {
   it('should detect invalid patterns', () => {
     const loader = new PatternLoader();
     
-    // Create an invalid pattern (missing required fields)
-    const invalidPattern = { ...samplePattern };
-    delete invalidPattern.metadata.title;
+    // Create an invalid pattern with a type assertion to bypass type checking for testing
+    const invalidPattern = JSON.parse(JSON.stringify(samplePattern)) as Pattern;
+    // @ts-ignore - Intentionally creating an invalid pattern for testing
+    invalidPattern.metadata.title = undefined;
     
-    const result = loader.validatePattern(invalidPattern as Pattern);
+    const result = loader.validatePattern(invalidPattern);
     
     expect(result.valid).toBe(false);
     expect(result.errors).toContain('Missing required field "title" in metadata');
