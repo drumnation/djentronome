@@ -2,7 +2,7 @@
 
 ## Status: ⭕ Planning
 
-## Last Updated: 2024-10-27
+## Last Updated: 2024-11-03
 
 ## 1. Project Overview
 
@@ -164,7 +164,7 @@
 
 *   `[ ]` F1: Monorepo & Tooling Setup
 *   `[X]` F2: Core Packages Scaffolding
-*   `[ ]` F4: Web MIDI Integration (Alesis Nitro Kick/Snare)
+*   `[X]` F4: Web MIDI Integration (Alesis Nitro Kick/Snare)
 *   `[ ]` F5: Static Pattern Loader & Format
 *   `[ ]` F6: Basic Game Loop
 *   `[ ]` F8: Hit Detection & Basic Scoring
