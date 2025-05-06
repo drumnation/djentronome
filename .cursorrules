@@ -47,3 +47,66 @@
 - **Commands:**
     - `cd packages/core-audio` (or relevant package)
     - `pnpm test` 
+
+# Cursor rules for Agent Spock
+
+## Scenarios
+
+### Setup New Package
+- **Scenario:** "Create a new shared package named [PackageName]."
+- **Skill-Jack:** `Read [".brain/2-agent-spock/d-skill-jacks/monorepo-tooling-pnpm-turbo.skill-jack.ts"]`
+- **Rules:** `monorepo-library-setup.rules.mdc`, `agent-use-monorepo-docs.rules.mdc`
+- **Commands:** 
+    - `mkdir -p packages/[PackageName]/src`
+    - `touch packages/[PackageName]/src/index.ts`
+    - (Agent generates package.json, tsconfig.json based on rules/skill-jack)
+    - `pnpm install`
+
+### Implement MIDI Handling
+- **Scenario:** "Implement the logic to detect kick and snare from Alesis Nitro."
+- **Skill-Jack:** `Read [".brain/2-agent-spock/d-skill-jacks/web-midi-integration.skill-jack.ts"]`
+- **Rules:** `midi-handler.rules.mdc`
+- **Commands:** 
+    - `cd packages/midi-handler` (or relevant package)
+
+### Add New Dependency to Package
+- **Scenario:** "Add the [DependencyName] library to the [PackageName] package."
+- **Skill-Jack:** `Read [".brain/2-agent-spock/d-skill-jacks/monorepo-tooling-pnpm-turbo.skill-jack.ts"]`
+- **Commands:** 
+    - `pnpm add [DependencyName] --filter @kit/[PackageName]` (Adjust scope @kit/ if needed)
+    - `pnpm add [DependencyName] --filter [appName]`
+
+### Implement Core Game Logic (Game Loop, State, Scoring)
+- **Scenario:** "Implement the [GameLogicFeature] logic (e.g., game loop, state update, scoring) in the [PackageName] package."
+- **Skill-Jack:** `Read [".brain/2-agent-spock/d-skill-jacks/tdd-vitest.skill-jack.ts"]`
+- **Skill-Jack:** `Read [".brain/2-agent-spock/d-skill-jacks/game-loop-architecture.skill-jack.ts"]` (for F6)
+- **Skill-Jack:** `Read [".brain/2-agent-spock/d-skill-jacks/zustand-advanced.skill-jack.ts"]` (if using Zustand for state)
+- **Skill-Jack:** `Read [".brain/2-agent-spock/d-skill-jacks/rhythm-game-scoring.skill-jack.ts"]` (for F8)
+- **Skill-Jack:** `Read [".brain/2-agent-spock/d-skill-jacks/latency-compensation.skill-jack.ts"]` (for F12)
+- **Skill-Jack:** `Read [".brain/2-agent-spock/d-skill-jacks/data-structures-game-patterns.skill-jack.ts"]` (for F5, F8)
+- **Skill-Jack:** `Read [".brain/2-agent-spock/d-skill-jacks/error-handling-resilience.skill-jack.ts"]`
+- **Rules:** `game-core-architecture.rules.mdc`, `functional-test-principles.rules`, `typescript-standards.rules.mdc`, `zustand.rules.mdc`
+- **Commands:**
+    - `cd packages/[PackageName]`
+    - `pnpm test --watch`
+
+### Implement Latency Calibration Logic
+- **Scenario:** "Implement the core logic for measuring and applying latency offset."
+- **Skill-Jack:** `Read [".brain/2-agent-spock/d-skill-jacks/latency-compensation.skill-jack.ts"]`
+- **Skill-Jack:** `Read [".brain/3-agent-q/d-skill-jacks/web-audio-game-synchronization.skill-jack.ts"]` (for timing relation)
+- **Rules:** `typescript-standards.rules.mdc`
+- **Commands:**
+    - `cd packages/[relevant-package]`
+
+### Run Tests for Package
+- **Scenario:** "Run the tests for the [PackageName] package."
+- **Skill-Jack:** `Read [".brain/2-agent-spock/d-skill-jacks/monorepo-tooling-pnpm-turbo.skill-jack.ts"]`
+- **Commands:** 
+    - `turbo run test --filter @kit/[PackageName]` (Adjust scope @kit/ if needed)
+    - `turbo run test --filter [appName]`
+
+### Update Documentation
+- **Scenario:** "Document the [Feature/Module] in the appropriate monorepo location."
+- **Rules:** `agent-use-monorepo-docs.rules.mdc`, `monorepo-project-documentation-structure.rules.mdc`
+- **Commands:**
+    - (Agent navigates to correct docs folder, e.g., `packages/[PackageName]/docs` or `docs/features/[Feature]`)

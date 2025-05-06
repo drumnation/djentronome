@@ -1,0 +1,42 @@
+{
+  "pattern": {
+    "id": "basic-rock-beat",
+    "version": "1.0",
+    "metadata": {
+      "title": "Basic Rock Beat",
+      "artist": "Djentronome",
+      "creator": "Pattern Generator",
+      "difficulty": "beginner",
+      "bpm": 120,
+      "timeSignature": "4/4",
+      "tags": ["rock", "beginner", "4/4"]
+    },
+    "duration": 8000,
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main Beat",
+        "startTime": 0,
+        "endTime": 8000,
+        "notes": [
+          { "time": 0, "type": "kick", "midiNote": 36, "velocity": 1.0 },
+          { "time": 500, "type": "hihat", "midiNote": 42, "velocity": 0.8 },
+          { "time": 1000, "type": "snare", "midiNote": 38, "velocity": 0.9 },
+          { "time": 1500, "type": "hihat", "midiNote": 42, "velocity": 0.7 },
+          { "time": 2000, "type": "kick", "midiNote": 36, "velocity": 1.0 },
+          { "time": 2500, "type": "hihat", "midiNote": 42, "velocity": 0.8 },
+          { "time": 3000, "type": "snare", "midiNote": 38, "velocity": 0.9 },
+          { "time": 3500, "type": "hihat", "midiNote": 42, "velocity": 0.7 },
+          { "time": 4000, "type": "kick", "midiNote": 36, "velocity": 1.0 },
+          { "time": 4500, "type": "hihat", "midiNote": 42, "velocity": 0.8 },
+          { "time": 5000, "type": "snare", "midiNote": 38, "velocity": 0.9 },
+          { "time": 5500, "type": "hihat", "midiNote": 42, "velocity": 0.7 },
+          { "time": 6000, "type": "kick", "midiNote": 36, "velocity": 1.0 },
+          { "time": 6500, "type": "hihat", "midiNote": 42, "velocity": 0.8 },
+          { "time": 7000, "type": "snare", "midiNote": 38, "velocity": 0.9 },
+          { "time": 7500, "type": "hihat", "midiNote": 42, "velocity": 0.7 }
+        ]
+      }
+    ]
+  }
+} 
