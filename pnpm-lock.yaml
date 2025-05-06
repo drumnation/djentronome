@@ -190,6 +190,24 @@ importers:
         specifier: ^0.34.0
         version: 0.34.6(jsdom@26.1.0)(playwright@1.52.0)
 
+  packages/core-midi:
+    devDependencies:
+      '@kit/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@kit/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@kit/testing':
+        specifier: workspace:*
+        version: link:../../tooling/testing
+      '@kit/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      vitest:
+        specifier: ^0.34.0
+        version: 0.34.6(jsdom@26.1.0)(playwright@1.52.0)
+
   packages/debug:
     devDependencies:
       '@kit/eslint-config':
@@ -298,6 +316,59 @@ importers:
         version: link:../../tooling/typescript
 
   packages/input:
+    devDependencies:
+      '@kit/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@kit/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@kit/testing':
+        specifier: workspace:*
+        version: link:../../tooling/testing
+      '@kit/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      vitest:
+        specifier: ^0.34.0
+        version: 0.34.6(jsdom@26.1.0)(playwright@1.52.0)
+
+  packages/pattern-loader:
+    dependencies:
+      '@djentronome/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      '@kit/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@kit/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@kit/testing':
+        specifier: workspace:*
+        version: link:../../tooling/testing
+      '@kit/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      vitest:
+        specifier: ^0.34.0
+        version: 0.34.6(jsdom@26.1.0)(playwright@1.52.0)
+
+  packages/rhythm-engine:
+    dependencies:
+      '@djentronome/core-midi':
+        specifier: workspace:*
+        version: link:../core-midi
+      '@djentronome/game-loop':
+        specifier: workspace:*
+        version: link:../game-loop
+      '@djentronome/pattern-loader':
+        specifier: workspace:*
+        version: link:../pattern-loader
+      '@djentronome/utils':
+        specifier: workspace:*
+        version: link:../utils
     devDependencies:
       '@kit/eslint-config':
         specifier: workspace:*
