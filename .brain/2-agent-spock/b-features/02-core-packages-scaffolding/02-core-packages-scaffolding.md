@@ -261,18 +261,29 @@ More detailed specifications and rationale are documented in the [technical deta
 
 ### 6.6. Subtask 6: Implement latency-calibration package
 
-* `[ ]` Task completed.
-* `[ ]` Write tests for latency measurement and compensation
-* `[ ]` Implement latency calibration functionality
-* `[ ]` Document latency calibration API and usage
+* `[x]` Task completed.
+* `[x]` Write tests for latency measurement and compensation
+* `[x]` Implement latency calibration functionality
+* `[x]` Document latency calibration API and usage
 * Relevant Skill Jacks: `Read @.brain/2-agent-spock/d-skill-jacks/latency-compensation.skill-jack.ts`
 * Testing Type: Unit Tests
 
-#### Implementation Status:
-- This task is pending.
-- Will implement mechanisms to measure and adjust for input latency.
-- Package will provide utilities for calibration tests and persistent storage of offset values.
-- Implementation will focus on accuracy and ease of use.
+#### Implementation Notes:
+- Implemented latency-calibration package with necessary files:
+  - package.json with dependencies on core-audio and core-midi
+  - tsconfig.json extending from @kit/tsconfig/base
+  - src/ directory with implementation files
+  - tests with Vitest configuration
+  - README.md with comprehensive documentation
+- Implemented LatencyCalibrator class with:
+  - Visual sync test (flashing + tap)
+  - Audio sync test (sound + tap)
+  - MIDI sync test (sound + MIDI input)
+  - Persistent storage of calibration results
+  - Configuration options for test parameters
+  - Multiple test types for statistical accuracy
+- Integrated with core-midi and core-audio packages
+- Designed API to be easily usable by other packages (particularly rhythm-engine)
 
 ### 6.7. Subtask 7: Integration testing between packages
 
@@ -312,13 +323,14 @@ More detailed specifications and rationale are documented in the [technical deta
 - Implement core-midi package with MIDI device connection and message handling
 - Implement pattern-loader package with pattern loading and validation
 - Implement rhythm-engine package with hit detection and scoring functionality
+- Implement latency-calibration package with sync tests and offset calibration
 
 ### 7.2. Next Steps
-- Implement latency-calibration package
 - Create integration tests between packages
 - Complete documentation updates
 
 ### 7.3. Progress Metrics
-- 5/8 subtasks completed (62.5%)
-- 3/4 packages implemented (75%)
-- Core gameplay mechanics ready for integration 
+- 6/8 subtasks completed (75%)
+- 4/4 packages fully implemented (100%)
+- Core gameplay mechanics ready for integration
+- Only integration testing and final documentation remaining 
